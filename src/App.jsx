@@ -3,7 +3,6 @@ import { Routes, Route, Navigate } from 'react-router-dom'
 import Layout from './components/Layout'
 import Dashboard from './pages/Dashboard'
 import GlobalProducts from './pages/GlobalProducts'
-import ShopInventory from './pages/ShopInventory'
 import Categories from './pages/Categories'
 import Banners from './pages/Banners'
 import Orders from './pages/Orders'
@@ -61,7 +60,6 @@ function App() {
           <Route path="global-products/new" element={<ProductForm />} />
           <Route path="global-products/:id/edit" element={<ProductForm />} />
           <Route path="manage-shops" element={<ManageShops shops={shops} refreshShops={fetchShops} />} />
-          <Route path="shop/:shopId/inventory" element={<ShopInventory shops={shops} />} />
           <Route path="categories" element={<Categories />} />
           <Route path="categories/new" element={<CategoryForm />} />
           <Route path="categories/:id/edit" element={<CategoryForm />} />
@@ -70,8 +68,8 @@ function App() {
           <Route path="banners/:id/edit" element={<BannerForm />} />
           <Route path="users" element={<Users />} />
           <Route path="users/:userId" element={<UserDetail />} />
-          <Route path="shop/:shopId/orders" element={<Orders shops={shops} />} />
-          <Route path="shop/:shopId/orders/:orderId" element={<OrderDetail />} />
+          <Route path="orders" element={<Orders shops={shops} />} />
+          <Route path="orders/:orderId" element={<OrderDetail />} />
           <Route path="manage-charges" element={<ManageCharges />} />
         </Route>
       </Routes>

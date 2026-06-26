@@ -43,10 +43,9 @@ export default function Login() {
       display: 'flex',
       alignItems: 'center',
       justifyContent: 'center',
-      background: 'radial-gradient(circle at 10% 20%, rgba(16, 185, 129, 0.05) 0%, rgba(255, 255, 255, 1) 90%)',
+      background: 'radial-gradient(ellipse at 10% 20%, rgba(34,197,94,0.12) 0%, #0a1a0f 70%)',
       padding: '24px',
       overflow: 'hidden',
-      fontFamily: "'Inter', sans-serif"
     }}>
       {/* Dynamic Background Blobs */}
       <style>{`
@@ -77,122 +76,87 @@ export default function Login() {
         }
         .input-wrapper:focus-within {
           border-color: #10b981 !important;
-          box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.12) !important;
-          background-color: #ffffff !important;
+          box-shadow: 0 0 0 3px rgba(34, 197, 94, 0.15) !important;
+          background-color: var(--bg-input) !important;
         }
       `}</style>
 
       {/* Blob 1 */}
       <div style={{
-        position: 'absolute',
-        width: '450px',
-        height: '450px',
-        background: 'radial-gradient(circle, rgba(16, 185, 129, 0.12) 0%, rgba(255, 255, 255, 0) 70%)',
-        top: '-100px',
-        left: '-100px',
-        filter: 'blur(50px)',
-        zIndex: 0,
+        position: 'absolute', width: '500px', height: '500px',
+        background: 'radial-gradient(circle, rgba(34,197,94,0.18) 0%, transparent 70%)',
+        top: '-150px', left: '-150px',
+        filter: 'blur(60px)', zIndex: 0,
         animation: 'blob-bounce 20s infinite alternate'
       }} />
 
       {/* Blob 2 */}
       <div style={{
-        position: 'absolute',
-        width: '600px',
-        height: '600px',
-        background: 'radial-gradient(circle, rgba(34, 197, 94, 0.08) 0%, rgba(255, 255, 255, 0) 70%)',
-        bottom: '-150px',
-        right: '-150px',
-        filter: 'blur(60px)',
-        zIndex: 0,
+        position: 'absolute', width: '600px', height: '600px',
+        background: 'radial-gradient(circle, rgba(22,163,74,0.12) 0%, transparent 70%)',
+        bottom: '-200px', right: '-200px',
+        filter: 'blur(70px)', zIndex: 0,
         animation: 'blob-bounce 25s infinite alternate-reverse'
       }} />
 
       {/* Login Card */}
       <div className="animate-card" style={{
         width: '100%',
-        maxWidth: '440px',
-        padding: '54px 44px',
+        maxWidth: '420px',
+        padding: '44px 36px',
         display: 'flex',
         flexDirection: 'column',
-        backgroundColor: 'rgba(255, 255, 255, 0.82)',
+        backgroundColor: 'var(--bg-secondary)',
         backdropFilter: 'blur(20px)',
         WebkitBackdropFilter: 'blur(20px)',
-        borderRadius: '28px',
-        boxShadow: '0 20px 50px rgba(16, 185, 129, 0.06), 0 0 0 1px rgba(16, 185, 129, 0.05)',
-        border: '1px solid rgba(255, 255, 255, 0.7)',
+        borderRadius: '24px',
+        boxShadow: '0 24px 60px rgba(0,0,0,0.5), 0 0 0 1px rgba(34,197,94,0.1)',
+        border: '1px solid var(--glass-border)',
         zIndex: 1,
         position: 'relative'
       }}>
         {/* Brand Header */}
         <div style={{ marginBottom: '40px', textAlign: 'center' }}>
           <img src={VegpikLogo} alt="Vegpik Logo" style={{ width: '64px', height: '64px', borderRadius: '18px', marginBottom: '16px', boxShadow: '0 8px 20px rgba(16, 185, 129, 0.25)' }} />
-          <h2 style={{
-            fontSize: '1.85rem',
-            fontWeight: 800,
-            color: '#111827',
-            letterSpacing: '-0.75px',
-            marginBottom: '6px'
-          }}>
+          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.5px', marginBottom: '6px' }}>
             Vegpik
           </h2>
-          <p style={{ color: '#4b5563', fontSize: '0.95rem', fontWeight: 500 }}>
-            Admin Control Center
-          </p>
+          <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>Admin Control Center</p>
         </div>
 
         {/* Error Notification */}
         {error && (
           <div style={{
-            width: '100%',
-            padding: '14px',
-            backgroundColor: '#fef2f2',
-            border: '1px solid #fecaca',
-            color: '#dc2626',
-            borderRadius: '12px',
-            marginBottom: '24px',
-            textAlign: 'center',
-            fontSize: '0.9rem',
-            fontWeight: 500,
-            boxShadow: '0 2px 6px rgba(220, 38, 38, 0.05)',
+            width: '100%', padding: '12px 16px',
+            background: 'rgba(248,113,113,0.1)',
+            border: '1px solid rgba(248,113,113,0.3)',
+            color: 'var(--accent-danger)',
+            borderRadius: '10px', marginBottom: '20px',
+            textAlign: 'center', fontSize: '0.88rem', fontWeight: 500,
             animation: 'error-shake 0.4s ease-in-out'
-          }}>
-            {error}
-          </div>
+          }}>{error}</div>
         )}
 
         {/* Form */}
         <form onSubmit={handleLogin} style={{ display: 'flex', flexDirection: 'column', gap: '22px' }}>
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.5px' }}>
-              EMAIL ADDRESS
+            <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              Email Address
             </label>
             <div className="input-wrapper" style={{
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              backgroundColor: '#f9fafb',
-              border: '1.5px solid #e5e7eb',
-              borderRadius: '14px',
-              transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+              position: 'relative', display: 'flex', alignItems: 'center',
+              backgroundColor: 'var(--bg-input)', border: '1px solid var(--glass-border)',
+              borderRadius: '12px', transition: 'all 0.25s ease',
             }}>
-              <FiMail style={{ position: 'absolute', left: '16px', color: '#9ca3af', fontSize: '1.2rem' }} />
+              <FiMail style={{ position: 'absolute', left: '14px', color: 'var(--text-muted)', fontSize: '1.1rem' }} />
               <input
-                type="email"
-                required
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                style={{ 
-                  width: '100%', 
-                  padding: '15px 16px 15px 48px',
-                  backgroundColor: 'transparent',
-                  border: 'none',
-                  outline: 'none',
-                  fontSize: '0.95rem',
-                  color: '#111827',
-                  fontWeight: 500
+                type="email" required value={email} onChange={(e) => setEmail(e.target.value)}
+                style={{
+                  width: '100%', padding: '13px 14px 13px 42px',
+                  backgroundColor: 'transparent', border: 'none', outline: 'none',
+                  fontSize: '0.9rem', color: 'var(--text-primary)', fontWeight: 500
                 }}
-                placeholder="admin@freshsabjihub.com"
+                placeholder="admin@vegpik.com"
               />
             </div>
           </div>

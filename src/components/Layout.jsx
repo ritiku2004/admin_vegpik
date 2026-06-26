@@ -13,9 +13,7 @@ export default function Layout({ shops }) {
   const [copyingOrderId, setCopyingOrderId] = useState(null);
   const [copied, setCopied] = useState(false);
 
-  const match = window.location.pathname.match(/\/shop\/(\d+)/);
-  const currentShopId = match ? parseInt(match[1]) : null;
-  const isCorrectShop = currentShopId && newOrderInfo && parseInt(currentShopId) === parseInt(newOrderInfo.shopId);
+
 
   const handleCopyOrder = async () => {
     if (!newOrderInfo) return;
@@ -82,46 +80,41 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
 
   const handleViewOrder = () => {
     if (newOrderInfo) {
-      const { shopId, orderId } = newOrderInfo;
-      // Close modal first
+      const { orderId } = newOrderInfo;
       setNewOrderInfo(null);
-      // Navigate to order details
-      navigate(`/shop/${shopId}/orders/${orderId}`);
+      navigate(`/orders/${orderId}`);
     }
   };
 
   return (
     <div className="app-container">
-      {/* Dynamic Push Notification Banner */}
-      {alertMessage && isCorrectShop && (
+      {/* Push Notification Banner */}
+      {alertMessage && (
         <div style={{
           position: 'fixed',
           top: '20px',
           right: '20px',
-          backgroundColor: '#10B981',
-          color: '#FFFFFF',
-          padding: '16px 24px',
+          background: 'linear-gradient(135deg, #16a34a, #22c55e)',
+          color: '#fff',
+          padding: '14px 20px',
           borderRadius: '12px',
-          boxShadow: '0 10px 15px -3px rgba(0, 0, 0, 0.1), 0 4px 6px -2px rgba(0, 0, 0, 0.05)',
+          boxShadow: '0 10px 30px rgba(0,0,0,0.4)',
           zIndex: 9999,
           display: 'flex',
           flexDirection: 'column',
           animation: 'slideIn 0.3s ease-out',
-          minWidth: '280px'
+          minWidth: '260px',
+          maxWidth: '320px',
+          border: '1px solid rgba(255,255,255,0.15)',
         }}>
-          <strong style={{ fontSize: '15px', fontWeight: 'bold' }}>{alertMessage.title}</strong>
-          <span style={{ fontSize: '13px', marginTop: '4px', opacity: 0.9 }}>{alertMessage.body}</span>
-          <button 
-            onClick={() => setAlertMessage(null)} 
+          <strong style={{ fontSize: '0.9rem', fontWeight: 700 }}>{alertMessage.title}</strong>
+          <span style={{ fontSize: '0.82rem', marginTop: '4px', opacity: 0.9 }}>{alertMessage.body}</span>
+          <button
+            onClick={() => setAlertMessage(null)}
             style={{
-              position: 'absolute',
-              top: '4px',
-              right: '8px',
-              background: 'none',
-              border: 'none',
-              color: 'white',
-              cursor: 'pointer',
-              fontSize: '16px'
+              position: 'absolute', top: '6px', right: '10px',
+              background: 'none', border: 'none', color: 'white',
+              cursor: 'pointer', fontSize: '16px', lineHeight: 1
             }}
           >
             ×
@@ -129,143 +122,99 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
         </div>
       )}
 
-      {/* New Order Alert Modal Popup */}
-      {newOrderInfo && isCorrectShop && (
+      {/* New Order Alert Modal */}
+      {newOrderInfo && (
         <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(15, 23, 42, 0.6)',
-          backdropFilter: 'blur(8px)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
+          position: 'fixed', inset: 0,
+          background: 'rgba(0,0,0,0.7)',
+          backdropFilter: 'blur(10px)',
+          display: 'flex', justifyContent: 'center', alignItems: 'center',
           zIndex: 99999,
-          animation: 'fadeIn 0.2s ease-out'
+          animation: 'fadeIn 0.2s ease-out',
+          padding: '16px',
         }}>
-          <div className="glass-panel" style={{
-            width: '90%',
-            maxWidth: '450px',
-            backgroundColor: 'rgba(255, 255, 255, 0.95)',
+          <div style={{
+            width: '100%', maxWidth: '440px',
+            background: 'var(--bg-secondary)',
+            border: '1px solid var(--glass-border)',
             borderRadius: '20px',
-            padding: '32px',
-            boxShadow: '0 25px 50px -12px rgba(0, 0, 0, 0.25)',
-            border: '1px solid rgba(255, 255, 255, 0.8)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px',
-            textAlign: 'center'
+            padding: '28px 24px',
+            boxShadow: '0 32px 80px rgba(0,0,0,0.6)',
+            display: 'flex', flexDirection: 'column', gap: '16px',
+            textAlign: 'center',
           }}>
             <div style={{
-              width: '64px',
-              height: '64px',
-              borderRadius: '50%',
-              backgroundColor: '#dcfce7',
-              color: '#16a34a',
-              display: 'flex',
-              alignItems: 'center',
-              justifyContent: 'center',
-              fontSize: '28px',
-              margin: '0 auto 8px auto'
-            }}>
-              🛒
-            </div>
+              width: '60px', height: '60px', borderRadius: '50%',
+              background: 'rgba(34,197,94,0.15)',
+              color: 'var(--accent-primary)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              fontSize: '26px', margin: '0 auto 4px',
+              border: '1px solid rgba(34,197,94,0.25)',
+            }}>🛒</div>
+
             <div>
-              <h3 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>
+              <h3 style={{ fontSize: '1.35rem', fontWeight: 700, color: 'var(--text-primary)', marginBottom: '8px' }}>
                 New Order Received!
               </h3>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem', lineHeight: '1.5' }}>
-                Order <strong style={{ color: 'var(--accent-primary)' }}>{newOrderInfo.orderNumber}</strong> has been placed by <strong>{newOrderInfo.customerName || 'Customer'}</strong>.
+              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', lineHeight: 1.5 }}>
+                Order <strong style={{ color: 'var(--accent-primary)' }}>{newOrderInfo.orderNumber}</strong> placed by <strong style={{ color: 'var(--text-primary)' }}>{newOrderInfo.customerName || 'Customer'}</strong>
               </p>
             </div>
-            
+
             <div style={{
-              backgroundColor: '#f8fafc',
-              borderRadius: '12px',
-              padding: '16px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center',
-              border: '1px solid #e2e8f0',
-              marginTop: '8px'
+              background: 'rgba(34,197,94,0.07)', borderRadius: '10px', padding: '14px',
+              display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+              border: '1px solid rgba(34,197,94,0.15)',
             }}>
-              <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Total Amount:</span>
-              <strong style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}>
+              <span style={{ color: 'var(--text-secondary)', fontWeight: 500, fontSize: '0.88rem' }}>Total Amount</span>
+              <strong style={{ fontSize: '1.15rem', color: 'var(--accent-primary)' }}>
                 AED {parseFloat(newOrderInfo.amount).toFixed(2)}
               </strong>
             </div>
 
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '16px' }}>
-              <button 
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '4px' }}>
+              <button
                 onClick={acceptCurrentNewOrder}
                 style={{
-                  padding: '12px',
-                  borderRadius: '10px',
-                  backgroundColor: '#10B981',
-                  color: 'white',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(16, 185, 129, 0.3)',
-                  transition: 'background-color 0.2s',
-                  fontSize: '15px'
+                  padding: '12px', borderRadius: '10px',
+                  background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+                  color: '#fff', fontWeight: 700, border: 'none', cursor: 'pointer',
+                  boxShadow: '0 4px 14px rgba(34,197,94,0.35)', fontSize: '0.95rem',
+                  transition: 'var(--transition-fast)',
                 }}
               >
-                Accept Order (Set to Processing)
+                ✅ Accept Order
               </button>
-              <button 
+              <button
                 onClick={handleCopyOrder}
                 disabled={copyingOrderId !== null}
                 style={{
-                  padding: '12px',
-                  borderRadius: '10px',
-                  backgroundColor: '#3b82f6',
-                  color: 'white',
-                  fontWeight: 600,
-                  border: 'none',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
-                  transition: 'background-color 0.2s',
-                  display: 'flex',
-                  justifyContent: 'center',
-                  alignItems: 'center',
-                  gap: '8px'
+                  padding: '12px', borderRadius: '10px',
+                  background: 'rgba(56,189,248,0.12)', color: '#38bdf8',
+                  border: '1px solid rgba(56,189,248,0.25)', fontWeight: 600, cursor: 'pointer',
+                  display: 'flex', justifyContent: 'center', alignItems: 'center', gap: '8px',
+                  fontSize: '0.9rem',
                 }}
               >
-                <FiCopy /> {copyingOrderId ? 'Copying...' : (copied ? 'Copied!' : 'Copy Order Details Info')}
+                <FiCopy /> {copyingOrderId ? 'Copying...' : (copied ? 'Copied!' : 'Copy Order Details')}
               </button>
-              <div style={{ display: 'flex', gap: '12px' }}>
-                <button 
+              <div style={{ display: 'flex', gap: '10px' }}>
+                <button
                   onClick={() => setNewOrderInfo(null)}
                   style={{
-                    flex: 1,
-                    padding: '12px',
-                    borderRadius: '10px',
-                    backgroundColor: '#f1f5f9',
-                    color: 'var(--text-primary)',
-                    fontWeight: 600,
-                    border: '1px solid #e2e8f0',
-                    cursor: 'pointer',
-                    transition: 'background-color 0.2s'
+                    flex: 1, padding: '11px', borderRadius: '10px',
+                    background: 'rgba(255,255,255,0.05)', color: 'var(--text-secondary)',
+                    border: '1px solid var(--glass-border)', fontWeight: 600, cursor: 'pointer', fontSize: '0.88rem',
                   }}
                 >
                   Dismiss
                 </button>
-                <button 
+                <button
                   onClick={handleViewOrder}
                   style={{
-                    flex: 1,
-                    padding: '12px',
-                    borderRadius: '10px',
-                    backgroundColor: 'var(--accent-primary)',
-                    color: 'white',
-                    fontWeight: 600,
-                    border: 'none',
-                    cursor: 'pointer',
-                    boxShadow: '0 4px 12px rgba(59, 130, 246, 0.3)',
-                    transition: 'background-color 0.2s'
+                    flex: 1, padding: '11px', borderRadius: '10px',
+                    background: 'rgba(34,197,94,0.12)', color: 'var(--accent-primary)',
+                    border: '1px solid rgba(34,197,94,0.25)', fontWeight: 600, cursor: 'pointer', fontSize: '0.88rem',
                   }}
                 >
                   View Details

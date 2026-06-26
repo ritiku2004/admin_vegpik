@@ -1,202 +1,168 @@
-import { useState, useEffect } from 'react'
+import { useEffect } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
-import { FiHome, FiList, FiImage, FiLayers, FiChevronDown, FiChevronRight, FiBox, FiShoppingBag, FiMapPin, FiX, FiLogOut, FiUsers, FiDollarSign } from 'react-icons/fi'
+import {
+  FiHome, FiList, FiImage, FiLayers, FiShoppingBag,
+  FiMapPin, FiX, FiLogOut, FiUsers, FiDollarSign
+} from 'react-icons/fi'
 import { useNotification } from '../context/NotificationContext'
 
-export default function Sidebar({ shops, isOpen, setIsOpen }) {
-  const [expandedShop, setExpandedShop] = useState(null);
+const globalLinks = [
+  { name: 'Dashboard',       path: '/dashboard',       icon: <FiHome /> },
+  { name: 'Orders',          path: '/orders',          icon: <FiShoppingBag /> },
+  { name: 'Products',        path: '/global-products', icon: <FiLayers /> },
+  { name: 'Categories',      path: '/categories',      icon: <FiList /> },
+  { name: 'Banners',         path: '/banners',         icon: <FiImage /> },
+  { name: 'Users',           path: '/users',           icon: <FiUsers /> },
+  { name: 'Shop Settings',   path: '/manage-shops',    icon: <FiMapPin /> },
+  { name: 'Manage Charges',  path: '/manage-charges',  icon: <FiDollarSign /> },
+];
+
+export default function Sidebar({ isOpen, setIsOpen }) {
   const location = useLocation();
   const navigate = useNavigate();
-  const { shopBadgeCounts, clearBadgeForShop } = useNotification();
+  const { shopBadgeCounts } = useNotification();
 
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
     navigate('/login', { replace: true });
   };
 
-  // Close sidebar on route change for mobile
+  // Close sidebar on route change (mobile)
   useEffect(() => {
-    if (window.innerWidth <= 768) {
-      setIsOpen(false);
-    }
+    if (window.innerWidth <= 768) setIsOpen(false);
   }, [location, setIsOpen]);
 
-  const toggleShop = (shopId) => {
-    setExpandedShop(prev => prev === shopId ? null : shopId);
-    // Clear badge count when admin clicks on/expands the shop
-    clearBadgeForShop(shopId);
-  };
-
-  const globalLinks = [
-    { name: 'Dashboard', path: '/dashboard', icon: <FiHome /> },
-    { name: 'Global Products', path: '/global-products', icon: <FiLayers /> },
-    { name: 'Manage Shops', path: '/manage-shops', icon: <FiMapPin /> },
-    { name: 'Categories', path: '/categories', icon: <FiList /> },
-    { name: 'Banners', path: '/banners', icon: <FiImage /> },
-    { name: 'Users', path: '/users', icon: <FiUsers /> },
-    { name: 'Manage Charges', path: '/manage-charges', icon: <FiDollarSign /> },
-  ];
-
   return (
-    <aside className={`glass-panel sidebar ${isOpen ? 'open' : ''}`} style={{
-      width: 'var(--sidebar-width)',
-      margin: '16px 0 16px 16px',
-      display: 'flex',
-      flexDirection: 'column',
-      overflow: 'hidden',
-      transition: 'var(--transition-normal)',
-      flexShrink: 0
-    }}>
+    <aside
+      className={`sidebar ${isOpen ? 'open' : ''}`}
+      style={{
+        width: 'var(--sidebar-width)',
+        display: 'flex',
+        flexDirection: 'column',
+        overflow: 'hidden',
+        flexShrink: 0,
+        height: '100vh',
+        position: 'relative',
+      }}
+    >
+      {/* Brand Header */}
       <div style={{
-        padding: '24px',
+        padding: '20px 20px 16px',
         borderBottom: '1px solid var(--glass-border)',
         display: 'flex',
+        alignItems: 'center',
         justifyContent: 'space-between',
-        alignItems: 'center'
+        gap: '12px',
+        flexShrink: 0
       }}>
-        <h2 style={{
-          fontSize: '1.25rem',
-          fontWeight: 700,
-          background: 'linear-gradient(to right, var(--accent-primary), #60a5fa)',
-          WebkitBackgroundClip: 'text',
-          WebkitTextFillColor: 'transparent',
-          letterSpacing: '1px'
-        }}>
-          Admin Panel
-        </h2>
-        {/* Mobile Close Button */}
-        <button className="mobile-close-btn" onClick={() => setIsOpen(false)}>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
+          {/* Logo mark */}
+          <div style={{
+            width: '36px', height: '36px',
+            background: 'linear-gradient(135deg, #22c55e, #16a34a)',
+            borderRadius: '10px',
+            display: 'flex', alignItems: 'center', justifyContent: 'center',
+            fontSize: '1.1rem',
+            boxShadow: '0 4px 12px rgba(34,197,94,0.35)',
+            flexShrink: 0
+          }}>
+            🥦
+          </div>
+          <div>
+            <div style={{
+              fontSize: '1.1rem', fontWeight: 800,
+              background: 'linear-gradient(to right, #22c55e, #86efac)',
+              WebkitBackgroundClip: 'text',
+              WebkitTextFillColor: 'transparent',
+              letterSpacing: '-0.3px',
+              lineHeight: 1.1
+            }}>
+              Vegpik
+            </div>
+            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 500 }}>
+              Admin Panel
+            </div>
+          </div>
+        </div>
+
+        {/* Mobile close */}
+        <button
+          className="mobile-close-btn"
+          onClick={() => setIsOpen(false)}
+          style={{ color: 'var(--text-secondary)' }}
+        >
           <FiX />
         </button>
       </div>
 
+      {/* Navigation */}
+      <nav style={{
+        flex: 1,
+        padding: '14px 12px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '4px',
+        overflowY: 'auto'
+      }}>
+        <p style={{
+          fontSize: '0.68rem',
+          fontWeight: 700,
+          letterSpacing: '0.1em',
+          color: 'var(--text-muted)',
+          textTransform: 'uppercase',
+          padding: '4px 8px 8px',
+          marginTop: '4px'
+        }}>
+          Main Menu
+        </p>
 
-      <nav style={{ flex: 1, padding: '16px 12px', display: 'flex', flexDirection: 'column', gap: '8px', overflowY: 'auto' }}>
-        {globalLinks.map((link) => (
+        {globalLinks.map(link => (
           <NavLink
             key={link.path}
             to={link.path}
             className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-            style={({ isActive }) => ({
-              display: 'flex',
-              alignItems: 'center',
-              gap: '12px',
-              padding: '12px 16px',
-              borderRadius: '8px',
-              color: isActive ? 'white' : 'var(--text-secondary)',
-              backgroundColor: isActive ? 'var(--accent-primary)' : 'transparent',
-              boxShadow: isActive ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none',
-              transition: 'var(--transition-fast)'
-            })}
           >
-            <span style={{ fontSize: '1.2rem', color: 'inherit' }}>{link.icon}</span>
-            <span style={{ fontWeight: 500 }}>{link.name}</span>
+            <span style={{ fontSize: '1.05rem', flexShrink: 0 }}>{link.icon}</span>
+            <span>{link.name}</span>
           </NavLink>
         ))}
-
-        {shops && shops.length > 0 && (
-          <div style={{ marginTop: '16px' }}>
-            <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', padding: '0 16px', marginBottom: '8px', fontWeight: 600, textTransform: 'uppercase' }}>
-              Shops
-            </p>
-            {shops.map(shop => {
-              const badgeCount = shopBadgeCounts[shop.id] || 0;
-              return (
-                <div key={shop.id} style={{ marginBottom: '4px' }}>
-                  <button
-                    onClick={() => toggleShop(shop.id)}
-                    style={{
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'space-between',
-                      width: '100%',
-                      padding: '12px 16px',
-                      borderRadius: '8px',
-                      color: 'var(--text-secondary)',
-                      backgroundColor: expandedShop === shop.id ? '#f1f5f9' : 'transparent',
-                      border: 'none',
-                      textAlign: 'left',
-                      transition: 'var(--transition-fast)',
-                      position: 'relative'
-                    }}
-                  >
-                    <span style={{ fontWeight: 500, display: 'flex', alignItems: 'center', gap: '8px' }}>
-                      {shop.name}
-                      {badgeCount > 0 && (
-                        <span style={{
-                          backgroundColor: '#EF4444',
-                          color: 'white',
-                          borderRadius: '10px',
-                          padding: '2px 8px',
-                          fontSize: '0.75rem',
-                          fontWeight: 'bold',
-                          animation: 'pulse 2s infinite'
-                        }}>
-                          {badgeCount}
-                        </span>
-                      )}
-                    </span>
-                    {expandedShop === shop.id ? <FiChevronDown /> : <FiChevronRight />}
-                  </button>
-                  {expandedShop === shop.id && (
-                    <div style={{ paddingLeft: '24px', display: 'flex', flexDirection: 'column', gap: '4px', marginTop: '4px' }}>
-                      <NavLink
-                        to={`/shop/${shop.id}/inventory`}
-                        className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                        style={({ isActive }) => ({
-                          display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', borderRadius: '8px',
-                          color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                          backgroundColor: isActive ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-                        })}
-                      >
-                        <FiBox /> Inventory
-                      </NavLink>
-                      <NavLink
-                        to={`/shop/${shop.id}/orders`}
-                        className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-                        style={({ isActive }) => ({
-                          display: 'flex', alignItems: 'center', gap: '8px', padding: '10px 16px', borderRadius: '8px',
-                          color: isActive ? 'var(--accent-primary)' : 'var(--text-secondary)',
-                          backgroundColor: isActive ? 'rgba(59, 130, 246, 0.1)' : 'transparent',
-                        })}
-                      >
-                        <FiShoppingBag /> Orders
-                      </NavLink>
-                    </div>
-                  )}
-                </div>
-              );
-            })}
-          </div>
-        )}
       </nav>
 
-      {/* Logout Button */}
-      <div style={{ padding: '16px', borderTop: '1px solid var(--glass-border)' }}>
+      {/* Logout */}
+      <div style={{
+        padding: '14px 12px',
+        borderTop: '1px solid var(--glass-border)',
+        flexShrink: 0
+      }}>
         <button
           onClick={handleLogout}
-          className="btn"
           style={{
+            width: '100%',
             display: 'flex',
             alignItems: 'center',
             justifyContent: 'center',
             gap: '8px',
-            width: '100%',
-            backgroundColor: '#fee2e2',
-            color: '#dc2626',
-            boxShadow: 'none'
+            padding: '11px 16px',
+            borderRadius: '10px',
+            background: 'rgba(248, 113, 113, 0.1)',
+            border: '1px solid rgba(248, 113, 113, 0.2)',
+            color: 'var(--accent-danger)',
+            fontWeight: 600,
+            fontSize: '0.9rem',
+            cursor: 'pointer',
+            transition: 'var(--transition-fast)',
           }}
-          onMouseEnter={(e) => {
-            e.currentTarget.style.backgroundColor = '#fecaca';
+          onMouseEnter={e => {
+            e.currentTarget.style.background = 'rgba(248, 113, 113, 0.18)';
           }}
-          onMouseLeave={(e) => {
-            e.currentTarget.style.backgroundColor = '#fee2e2';
+          onMouseLeave={e => {
+            e.currentTarget.style.background = 'rgba(248, 113, 113, 0.1)';
           }}
         >
-          <FiLogOut size={18} />
-          <span>Logout</span>
+          <FiLogOut size={16} />
+          Logout
         </button>
       </div>
     </aside>
-  )
+  );
 }

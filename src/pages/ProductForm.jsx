@@ -7,9 +7,7 @@ import CustomSelect from '../components/CustomSelect'
 export default function ProductForm() {
   const { id } = useParams();
   const navigate = useNavigate();
-  const isEdit = Boolean(id);
-
-  const [formData, setFormData] = useState({
+  const isEdit = Boolean(id);  const [formData, setFormData] = useState({
     name: '',
     category_id: '',
     description: '',
@@ -20,7 +18,9 @@ export default function ProductForm() {
     quantity_type: 'piece',
     sku: '',
     image_url: '',
-    is_active: true
+    is_active: true,
+    is_available: true,
+    type: 'general'
   });
   const [categories, setCategories] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -61,7 +61,9 @@ export default function ProductForm() {
           quantity_type: data.data.quantity_type || 'piece',
           sku: data.data.sku || '',
           image_url: data.data.image_url || '',
-          is_active: data.data.is_active !== undefined ? data.data.is_active : true
+          is_active: data.data.is_active !== undefined ? data.data.is_active : true,
+          is_available: data.data.is_available !== undefined ? data.data.is_available : true,
+          type: data.data.type || 'general'
         });
         setFeatures(data.data.features || []);
       }
@@ -284,6 +286,35 @@ export default function ProductForm() {
               isRequired={true}
               options={['kg', 'g', 'mg', 'l', 'ml', 'piece', 'pack', 'dozen'].map(t => ({ value: t, label: t }))} 
             />
+          </div>
+
+          <div className="input-group">
+            <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block' }}>Product Type *</label>
+            <CustomSelect 
+              name="type" 
+              value={formData.type} 
+              onChange={handleInputChange} 
+              isRequired={true}
+              options={[
+                { value: 'general', label: 'General' },
+                { value: 'trending', label: 'Trending' },
+                { value: 'best deal', label: 'Best Deal' }
+              ]} 
+            />
+          </div>
+
+          <div className="input-group">
+            <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block' }}>Availability</label>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', height: '42px' }}>
+              <input 
+                type="checkbox" 
+                name="is_available" 
+                checked={formData.is_available} 
+                onChange={(e) => setFormData({ ...formData, is_available: e.target.checked })} 
+                style={{ width: '20px', height: '20px', cursor: 'pointer' }}
+              />
+              <span style={{ fontWeight: 500 }}>Product is available for sale</span>
+            </div>
           </div>
 
           <div className="input-group" style={{ gridColumn: '1 / -1' }}>

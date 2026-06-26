@@ -1,10 +1,9 @@
 import { useState, useEffect } from 'react'
-import { useParams, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import { FiEye, FiClock, FiCheck, FiTruck, FiX, FiCopy } from 'react-icons/fi'
 import api from '../api'
 
-export default function Orders({ shops }) {
-  const { shopId } = useParams();
+export default function Orders() {
   const navigate = useNavigate();
   const [orders, setOrders] = useState([]);
   const [copyingOrderId, setCopyingOrderId] = useState(null);
@@ -73,17 +72,14 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
     }
   };
   
-  const activeShop = shops.find(s => s.id === parseInt(shopId));
-
   useEffect(() => {
-    if (activeShop) {
-      fetchOrders();
-    }
-  }, [activeShop]);
+    fetchOrders();
+  }, []);
 
   const fetchOrders = async () => {
     try {
-      const { data } = await api.get('/orders', { params: { shopId: activeShop.id } });
+      // Assuming backend defaults to primary shop or gets all orders
+      const { data } = await api.get('/orders');
       if (data.success) setOrders(data.data);
     } catch (err) {
       console.error(err);
@@ -123,7 +119,7 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
         <div>
           <h1 style={{ fontSize: '2rem', fontWeight: 600, marginBottom: '8px' }}>Orders</h1>
-          <p style={{ color: 'var(--text-secondary)' }}>Manage recent orders for <strong>{activeShop ? activeShop.name : '...'}</strong></p>
+          <p style={{ color: 'var(--text-secondary)' }}>Manage orders</p>
         </div>
         <div>
           <select
@@ -205,12 +201,8 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
                     >
                       <FiCopy /> {copyingOrderId === order.id ? 'Copying...' : (copiedOrderId === order.id ? 'Copied!' : 'Copy')}
                     </button>
-                    <button 
-                      className="btn" 
-                      onClick={() => navigate(`/shop/${shopId}/orders/${order.id}`)}
-                      style={{ padding: '6px 12px', border: '1px solid #cbd5e1', color: 'var(--text-primary)', display: 'inline-flex', alignItems: 'center', gap: '4px' }}
-                    >
-                      <FiEye /> View
+                    <button className="icon-btn" onClick={() => navigate(`/orders/${order.id}`)} style={{ color: 'var(--accent-primary)', fontSize: '1.2rem' }}>
+                      <FiEye />
                     </button>
                   </td>
                 </tr>

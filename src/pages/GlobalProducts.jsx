@@ -55,11 +55,11 @@ export default function GlobalProducts() {
     <div className="page-content">
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 600, marginBottom: '8px' }}>Global Products</h1>
+          <h1 style={{ fontSize: '2rem', fontWeight: 600, marginBottom: '8px' }}>Products</h1>
           <p style={{ color: 'var(--text-secondary)' }}>Master catalog of all available products</p>
         </div>
         <Link to="/global-products/new" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
-          <FiPlus /> Add Global Product
+          <FiPlus /> Add Product
         </Link>
       </div>
 
@@ -92,8 +92,9 @@ export default function GlobalProducts() {
               <tr>
                 <th>Product</th>
                 <th>Category</th>
-                <th>Brand</th>
+                 <th>Brand</th>
                  <th>Price</th>
+                 <th>Availability</th>
                 <th style={{ textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
@@ -132,6 +133,13 @@ export default function GlobalProducts() {
                       </div>
                     ) : (
                       <div style={{ fontWeight: 600 }}>AED {parseFloat(product.mrp_price).toFixed(2)}</div>
+                    )}
+                  </td>
+                  <td>
+                    {product.is_available ? (
+                      <span style={{ backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#16a34a', padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600 }}>Available</span>
+                    ) : (
+                      <span style={{ backgroundColor: 'rgba(239, 68, 68, 0.1)', color: '#dc2626', padding: '4px 8px', borderRadius: '4px', fontSize: '0.8rem', fontWeight: 600 }}>Not Available</span>
                     )}
                   </td>
                   <td style={{ textAlign: 'right' }}>

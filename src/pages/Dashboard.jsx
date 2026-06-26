@@ -59,20 +59,21 @@ export default function Dashboard() {
         </div>
         
         {/* Timeframe Toggles */}
-        <div style={{ display: 'flex', background: '#f1f5f9', padding: '4px', borderRadius: '12px' }}>
+        <div style={{ display: 'flex', background: 'var(--bg-elevated)', padding: '4px', borderRadius: '12px', border: '1px solid var(--glass-border)', flexWrap: 'wrap', gap: '2px' }}>
           {['week', '15days', 'month', 'overall'].map((tf) => (
-            <button 
+            <button
               key={tf}
               onClick={() => setTimeframe(tf)}
               style={{
-                padding: '8px 16px',
+                padding: '8px 14px',
                 borderRadius: '8px',
                 fontWeight: 600,
-                fontSize: '0.85rem',
-                color: timeframe === tf ? '#ffffff' : '#64748b',
+                fontSize: '0.82rem',
+                color: timeframe === tf ? '#fff' : 'var(--text-secondary)',
                 background: timeframe === tf ? 'var(--accent-primary)' : 'transparent',
-                boxShadow: timeframe === tf ? '0 4px 12px rgba(59, 130, 246, 0.3)' : 'none',
-                transition: 'all 0.2s ease'
+                boxShadow: timeframe === tf ? '0 4px 12px rgba(34,197,94,0.35)' : 'none',
+                transition: 'all 0.2s ease',
+                whiteSpace: 'nowrap',
               }}
             >
               {tf === 'week' ? '7 Days' : tf === '15days' ? '15 Days' : tf === 'month' ? '1 Month' : 'Overall'}
@@ -134,13 +135,13 @@ export default function Dashboard() {
                   <stop offset="95%" stopColor="var(--accent-primary)" stopOpacity={0}/>
                 </linearGradient>
               </defs>
-              <XAxis dataKey="date" stroke="#94a3b8" fontSize={12} tickMargin={10} minTickGap={20} />
-              <YAxis stroke="#94a3b8" fontSize={12} tickFormatter={(value) => `AED ${value}`} />
-              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
-              <Tooltip 
-                contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}
+              <XAxis dataKey="date" stroke="var(--text-muted)" fontSize={12} tickMargin={10} minTickGap={20} />
+              <YAxis stroke="var(--text-muted)" fontSize={12} tickFormatter={(value) => `AED ${value}`} />
+              <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="rgba(34,197,94,0.1)" />
+              <Tooltip
+                contentStyle={{ borderRadius: '12px', border: '1px solid var(--glass-border)', background: 'var(--bg-secondary)', color: 'var(--text-primary)', boxShadow: '0 10px 25px rgba(0,0,0,0.3)' }}
                 formatter={(value) => [`AED ${parseFloat(value).toFixed(2)}`, 'Revenue']}
-                labelStyle={{ color: '#64748b', fontWeight: 600, marginBottom: '8px' }}
+                labelStyle={{ color: 'var(--text-secondary)', fontWeight: 600, marginBottom: '8px' }}
               />
               <Area 
                 type="monotone" 

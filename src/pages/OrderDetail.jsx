@@ -4,7 +4,7 @@ import { FiArrowLeft, FiUser, FiMapPin, FiPackage, FiClock, FiCopy, FiExternalLi
 import api from '../api';
 
 export default function OrderDetail() {
-  const { shopId, orderId } = useParams();
+  const { orderId } = useParams();
   const navigate = useNavigate();
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -217,7 +217,7 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
       {/* Header */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginBottom: '32px' }}>
         <button 
-          onClick={() => navigate(`/shop/${shopId}/orders`)} 
+          onClick={() => navigate('/orders')}
           style={{ 
             background: 'none', 
             border: 'none', 

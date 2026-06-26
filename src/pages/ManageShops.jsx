@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
-import { FiPlus, FiMapPin, FiX, FiCheckCircle, FiXCircle, FiTrash2 } from 'react-icons/fi'
-import { MapContainer, TileLayer, Marker, useMapEvents, useMap } from 'react-leaflet'
+import { FiSave, FiMapPin } from 'react-icons/fi'
+import { MapContainer, TileLayer, Marker, Circle, useMapEvents, useMap } from 'react-leaflet'
 import 'leaflet/dist/leaflet.css'
 import L from 'leaflet'
 import api from '../api'
@@ -40,267 +40,294 @@ function MapController({ position }) {
   const map = useMap();
   useEffect(() => {
     if (position && position.lat && position.lng) {
-      map.flyTo([position.lat, position.lng], 15);
+      map.flyTo([position.lat, position.lng], 13);
     }
   }, [position?.lat, position?.lng]);
   return null;
 }
 
 export default function ManageShops({ shops, refreshShops }) {
-  const [showAddModal, setShowAddModal] = useState(false);
-  const [editingShopId, setEditingShopId] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [saving, setSaving] = useState(false);
+  const [shopId, setShopId] = useState(null);
+  
   const [formData, setFormData] = useState({
-    name: '',
+    name: 'Vegpik Store',
     address: '',
     city: '',
     latitude: '',
     longitude: '',
-    is_active: true
+    is_active: true,
+    delivery_radius_km: 15
   });
 
+  useEffect(() => {
+    if (shops && shops.length > 0) {
+      const shop = shops[0]; // Primary shop
+      setShopId(shop.id);
+      setFormData({
+        name: shop.name,
+        address: shop.address,
+        city: shop.city,
+        latitude: shop.latitude ? String(shop.latitude) : '',
+        longitude: shop.longitude ? String(shop.longitude) : '',
+        is_active: shop.is_active,
+        delivery_radius_km: shop.delivery_radius_km ? parseFloat(shop.delivery_radius_km) : 15
+      });
+      setLoading(false);
+    } else {
+      setLoading(false);
+    }
+  }, [shops]);
+
   const handleSetPosition = (pos) => {
-    setFormData({ ...formData, latitude: pos.lat.toFixed(6), longitude: pos.lng.toFixed(6) });
+    setFormData(prev => ({ ...prev, latitude: pos.lat.toFixed(6), longitude: pos.lng.toFixed(6) }));
   };
 
-  const handleOpenAddModal = () => {
-    setEditingShopId(null);
-    setFormData({ name: '', address: '', city: '', latitude: '', longitude: '', is_active: true });
-    setShowAddModal(true);
-  };
-
-  const handleOpenEditModal = (shop) => {
-    setEditingShopId(shop.id);
-    setFormData({
-      name: shop.name,
-      address: shop.address,
-      city: shop.city,
-      latitude: shop.latitude ? String(shop.latitude) : '',
-      longitude: shop.longitude ? String(shop.longitude) : '',
-      is_active: shop.is_active
-    });
-    setShowAddModal(true);
-  };
-
-  const handleDeleteShop = async (id, name) => {
-    if (!window.confirm(`Are you sure you want to delete the shop "${name}"? This will also cascade delete all associated inventory, carts, and orders.`)) {
-      return;
-    }
-    try {
-      const { data } = await api.delete(`/shops/${id}`);
-      if (data.success) {
-        if (refreshShops) refreshShops();
-      }
-    } catch (error) {
-      console.error('Failed to delete shop', error);
-      alert(error.response?.data?.error || 'Failed to delete shop');
-    }
-  };
-
-  const handleAddSubmit = async (e) => {
+  const handleSave = async (e) => {
     e.preventDefault();
+    setSaving(true);
     try {
       const payload = {
-        name: formData.name,
-        address: formData.address,
-        city: formData.city,
-        latitude: formData.latitude ? parseFloat(formData.latitude) : 0,
-        longitude: formData.longitude ? parseFloat(formData.longitude) : 0,
-        is_active: formData.is_active
+        ...formData,
+        latitude: parseFloat(formData.latitude),
+        longitude: parseFloat(formData.longitude),
+        delivery_radius_km: parseFloat(formData.delivery_radius_km)
       };
-      
-      let response;
-      if (editingShopId) {
-        response = await api.put(`/shops/${editingShopId}`, payload);
+
+      if (shopId) {
+        const { data } = await api.put(`/shops/${shopId}`, payload);
+        if (data.success) {
+          alert('Shop details updated successfully!');
+          if (refreshShops) refreshShops();
+        }
       } else {
-        response = await api.post('/shops', payload);
-      }
-      
-      if (response.data.success) {
-        if (refreshShops) refreshShops(); // Update global state
-        setShowAddModal(false);
+        const { data } = await api.post('/shops', payload);
+        if (data.success) {
+          alert('Shop details saved successfully!');
+          if (refreshShops) refreshShops();
+        }
       }
     } catch (error) {
-      console.error('Failed to save shop', error);
-      alert(error.response?.data?.errors?.[0]?.msg || error.response?.data?.error || 'Failed to save shop');
+      console.error('Failed to save shop details', error);
+      alert(error.response?.data?.error || 'Failed to save shop details');
+    } finally {
+      setSaving(false);
     }
   };
+
+  const markerPosition = formData.latitude && formData.longitude
+    ? { lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) }
+    : null;
+
+  const mapCenter = markerPosition || { lat: 25.2048, lng: 55.2708 }; // Default Dubai
+
+  if (loading) {
+    return (
+      <div className="page-content" style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', minHeight: '300px' }}>
+        <p style={{ color: 'var(--text-secondary)' }}>Loading shop details...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="page-content">
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '32px' }}>
-        <div>
-          <h1 style={{ fontSize: '2rem', fontWeight: 600, marginBottom: '8px' }}>Manage Shops</h1>
-          <p style={{ color: 'var(--text-secondary)' }}>Global physical store locations</p>
-        </div>
-        <button className="btn btn-primary" onClick={handleOpenAddModal}>
-          <FiPlus /> Add New Shop
-        </button>
+      <div style={{ marginBottom: '32px' }}>
+        <h1 style={{ fontSize: '2rem', fontWeight: 600, marginBottom: '8px' }}>Shop Settings</h1>
+        <p style={{ color: 'var(--text-secondary)' }}>Manage the primary store location and delivery coverage</p>
       </div>
 
-      <div className="glass-panel" style={{ padding: '24px' }}>
-        <div className="table-container">
-          <table>
-            <thead>
-              <tr>
-                <th>Shop Name</th>
-                <th>Location</th>
-                <th>Coordinates</th>
-                <th>Status</th>
-                <th>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {shops?.map(shop => (
-                <tr key={shop.id}>
-                  <td>
-                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-                      <div style={{ width: '40px', height: '40px', borderRadius: '8px', background: 'var(--accent-primary)', color: 'white', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-                        <FiMapPin />
-                      </div>
-                      <div>
-                        <p style={{ fontWeight: 600 }}>{shop.name}</p>
-                        <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>ID: {shop.id}</p>
-                      </div>
-                    </div>
-                  </td>
-                  <td>
-                    <p>{shop.address}</p>
-                    <p style={{ fontSize: '0.8rem', color: 'var(--text-secondary)' }}>{shop.city}</p>
-                  </td>
-                  <td style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
-                    {shop.latitude}, {shop.longitude}
-                  </td>
-                  <td>
-                    {shop.is_active ? (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: '#dcfce7', color: '#166534', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 500 }}>
-                        <FiCheckCircle /> Active
-                      </span>
-                    ) : (
-                      <span style={{ display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '4px 12px', background: '#fee2e2', color: '#991b1b', borderRadius: '12px', fontSize: '0.85rem', fontWeight: 500 }}>
-                        <FiXCircle /> Inactive
-                      </span>
-                    )}
-                  </td>
-                  <td>
-                    <div style={{ display: 'flex', gap: '8px' }}>
-                      <button className="btn btn-secondary" onClick={() => handleOpenEditModal(shop)} style={{ padding: '6px 12px', fontSize: '0.85rem' }}>Edit</button>
-                      <button 
-                        className="btn btn-danger" 
-                        onClick={() => handleDeleteShop(shop.id, shop.name)} 
-                        style={{ padding: '6px 12px', fontSize: '0.85rem' }}
-                      >
-                        <FiTrash2 /> Delete
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))}
-              {(!shops || shops.length === 0) && (
-                <tr>
-                  <td colSpan="5" style={{ textAlign: 'center', padding: '40px', color: 'var(--text-secondary)' }}>
-                    No shops found. Create one to get started!
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
+      <div className="glass-panel" style={{ padding: '32px', maxWidth: '860px', width: '100%' }}>
+        <form onSubmit={handleSave} style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
+          
+          <div className="input-group">
+            <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block' }}>Store Name</label>
+            <input 
+              required
+              type="text" 
+              value={formData.name} 
+              onChange={e => setFormData(prev => ({ ...prev, name: e.target.value }))} 
+              className="input-field" 
+              placeholder="Store Name"
+            />
+          </div>
 
-      {showAddModal && (
-        <div className="modal-overlay">
-          <div className="modal-content" style={{ width: '600px' }}>
-            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '24px' }}>
-              <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{editingShopId ? 'Edit Shop Location' : 'Add New Shop Location'}</h3>
-              <button onClick={() => setShowAddModal(false)} style={{ color: 'var(--text-secondary)', fontSize: '1.2rem' }}>
-                <FiX />
-              </button>
+          <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+            <div className="input-group">
+              <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block' }}>City</label>
+              <input 
+                required
+                type="text" 
+                value={formData.city} 
+                onChange={e => setFormData(prev => ({ ...prev, city: e.target.value }))} 
+                className="input-field" 
+                placeholder="City"
+              />
             </div>
-            <form onSubmit={handleAddSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-              
-              <div>
-                <label className="form-label">Shop Name</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  required 
-                  value={formData.name}
-                  onChange={(e) => setFormData({...formData, name: e.target.value})}
-                  placeholder="e.g. Downtown Central"
-                  style={{ width: '100%' }}
-                />
-              </div>
-
-              <div>
-                <label className="form-label">Address</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  required 
-                  value={formData.address}
-                  onChange={(e) => setFormData({...formData, address: e.target.value})}
-                  placeholder="e.g. 123 Main St"
-                  style={{ width: '100%' }}
-                />
-              </div>
-
-              <div>
-                <label className="form-label">City</label>
-                <input 
-                  type="text" 
-                  className="input-field" 
-                  required 
-                  value={formData.city}
-                  onChange={(e) => setFormData({...formData, city: e.target.value})}
-                  placeholder="e.g. New York"
-                  style={{ width: '100%' }}
-                />
-              </div>
-
-              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
-                <label className="form-label">Location on Map (Click or Drag Pin)</label>
-                <div style={{ height: '250px', width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-color)', zIndex: 0 }}>
-                  <MapContainer center={[25.2048, 55.2708]} zoom={12} style={{ height: '100%', width: '100%' }}>
-                    <TileLayer
-                      url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
-                      maxZoom={19}
-                    />
-                    <LocationMarker 
-                      position={formData.latitude && formData.longitude ? { lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) } : null} 
-                      setPosition={handleSetPosition} 
-                    />
-                    <MapController 
-                      position={formData.latitude && formData.longitude ? { lat: parseFloat(formData.latitude), lng: parseFloat(formData.longitude) } : null} 
-                    />
-                  </MapContainer>
-                </div>
-                <div style={{ display: 'flex', gap: '16px', marginTop: '4px' }}>
-                  <div style={{ flex: 1, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                    Lat: {formData.latitude || 'Not set'}
-                  </div>
-                  <div style={{ flex: 1, fontSize: '0.9rem', color: 'var(--text-secondary)' }}>
-                    Lng: {formData.longitude || 'Not set'}
-                  </div>
-                </div>
-              </div>
-
-              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', marginTop: '8px' }}>
+            
+            <div className="input-group">
+              <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block' }}>Store Status</label>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '12px', height: '42px' }}>
                 <input 
                   type="checkbox" 
-                  checked={formData.is_active}
-                  onChange={(e) => setFormData({...formData, is_active: e.target.checked})}
+                  checked={formData.is_active} 
+                  onChange={e => setFormData(prev => ({ ...prev, is_active: e.target.checked }))} 
+                  style={{ width: '20px', height: '20px', cursor: 'pointer' }}
                 />
-                <label style={{ color: 'var(--text-secondary)' }}>Is Currently Active</label>
+                <span style={{ fontWeight: 500 }}>Store is Open</span>
               </div>
-
-              <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '12px', marginTop: '16px' }}>
-                <button type="button" onClick={() => setShowAddModal(false)} className="btn btn-secondary">Cancel</button>
-                <button type="submit" className="btn btn-primary">{editingShopId ? 'Update Shop' : 'Create Shop'}</button>
-              </div>
-            </form>
+            </div>
           </div>
-        </div>
-      )}
+
+          <div className="input-group">
+            <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block' }}>Full Address</label>
+            <textarea 
+              required
+              value={formData.address} 
+              onChange={e => setFormData(prev => ({ ...prev, address: e.target.value }))} 
+              className="input-field" 
+              rows="3"
+              placeholder="Full street address..."
+            />
+          </div>
+
+          {/* Delivery Radius Section */}
+          <div className="input-group" style={{ background: 'rgba(99, 102, 241, 0.05)', border: '1px solid rgba(99, 102, 241, 0.2)', borderRadius: '12px', padding: '20px' }}>
+            <label style={{ fontWeight: 700, marginBottom: '12px', display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--accent-primary)' }}>
+              🚚 Delivery Radius Management
+            </label>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '16px' }}>
+              Set the maximum delivery distance from the store. Orders from outside this radius will show "Out of Zone" to customers.
+            </p>
+
+            <div style={{ display: 'flex', alignItems: 'center', gap: '20px', flexWrap: 'wrap' }}>
+              <div style={{ flex: 1, minWidth: '250px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '8px' }}>
+                  <span style={{ fontWeight: 500, fontSize: '0.9rem' }}>Radius</span>
+                  <span style={{ 
+                    fontWeight: 700, 
+                    fontSize: '1.1rem',
+                    color: 'var(--accent-primary)',
+                    background: 'rgba(99, 102, 241, 0.1)',
+                    padding: '2px 12px',
+                    borderRadius: '20px'
+                  }}>
+                    {formData.delivery_radius_km} km
+                  </span>
+                </div>
+                <input
+                  type="range"
+                  min="1"
+                  max="50"
+                  step="0.5"
+                  value={formData.delivery_radius_km}
+                  onChange={e => setFormData(prev => ({ ...prev, delivery_radius_km: parseFloat(e.target.value) }))}
+                  style={{ 
+                    width: '100%', 
+                    accentColor: 'var(--accent-primary)',
+                    cursor: 'pointer',
+                    height: '6px'
+                  }}
+                />
+                <div style={{ display: 'flex', justifyContent: 'space-between', marginTop: '6px', fontSize: '0.75rem', color: 'var(--text-secondary)' }}>
+                  <span>1 km</span>
+                  <span>25 km</span>
+                  <span>50 km</span>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                {[5, 10, 15, 25].map(r => (
+                  <button
+                    key={r}
+                    type="button"
+                    onClick={() => setFormData(prev => ({ ...prev, delivery_radius_km: r }))}
+                    style={{
+                      padding: '6px 16px',
+                      borderRadius: '8px',
+                      border: '1px solid',
+                      borderColor: formData.delivery_radius_km === r ? 'var(--accent-primary)' : '#cbd5e1',
+                      background: formData.delivery_radius_km === r ? 'var(--accent-primary)' : 'transparent',
+                      color: formData.delivery_radius_km === r ? '#fff' : 'var(--text-secondary)',
+                      fontWeight: 600,
+                      cursor: 'pointer',
+                      fontSize: '0.85rem',
+                      transition: 'all 0.15s ease'
+                    }}
+                  >
+                    {r} km
+                  </button>
+                ))}
+              </div>
+            </div>
+          </div>
+
+          <div className="input-group">
+            <label style={{ fontWeight: 600, marginBottom: '8px', display: 'flex', alignItems: 'center', gap: '8px' }}>
+              <FiMapPin /> Store Location & Delivery Coverage
+            </label>
+            <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', marginBottom: '12px' }}>
+              Click on the map or drag the marker to set the store location. The blue circle shows the delivery radius.
+            </p>
+            
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px', marginBottom: '16px' }}>
+              <input 
+                type="text" 
+                placeholder="Latitude" 
+                value={formData.latitude} 
+                onChange={e => setFormData(prev => ({ ...prev, latitude: e.target.value }))} 
+                className="input-field"
+                required
+              />
+              <input 
+                type="text" 
+                placeholder="Longitude" 
+                value={formData.longitude} 
+                onChange={e => setFormData(prev => ({ ...prev, longitude: e.target.value }))} 
+                className="input-field"
+                required
+              />
+            </div>
+            
+            <div style={{ height: '380px', borderRadius: '12px', overflow: 'hidden', border: '1px solid #cbd5e1' }}>
+              <MapContainer 
+                center={mapCenter} 
+                zoom={11} 
+                style={{ height: '100%', width: '100%' }}
+              >
+                <TileLayer
+                  url="https://{s}.basemaps.cartocdn.com/rastertiles/voyager/{z}/{x}/{y}{r}.png"
+                  attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> &copy; <a href="https://carto.com/attributions">CARTO</a>'
+                />
+                <MapController position={mapCenter} />
+                <LocationMarker 
+                  position={markerPosition}
+                  setPosition={handleSetPosition} 
+                />
+                {markerPosition && (
+                  <Circle
+                    center={markerPosition}
+                    radius={formData.delivery_radius_km * 1000} // convert km → meters
+                    pathOptions={{
+                      color: '#6366f1',
+                      fillColor: '#6366f1',
+                      fillOpacity: 0.08,
+                      weight: 2,
+                      dashArray: '6 4'
+                    }}
+                  />
+                )}
+              </MapContainer>
+            </div>
+          </div>
+
+          <div style={{ display: 'flex', justifyContent: 'flex-end', marginTop: '8px' }}>
+            <button type="submit" disabled={saving} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px', padding: '12px 28px' }}>
+              <FiSave /> {saving ? 'Saving...' : 'Save Settings'}
+            </button>
+          </div>
+        </form>
+      </div>
     </div>
   )
 }
