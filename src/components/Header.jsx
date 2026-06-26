@@ -73,7 +73,7 @@ export default function Header({ shops, toggleSidebar }) {
               WebkitBackgroundClip: 'text',
               WebkitTextFillColor: 'transparent',
             }}>
-              Fresh Subji Hub
+              Vegpik
             </span>
           </div>
         )}
@@ -184,7 +184,7 @@ export default function Header({ shops, toggleSidebar }) {
                           <div style={{ fontSize: '0.8rem', color: '#1E293B', fontWeight: 600 }}>{order.customerName}</div>
                         </div>
                         <span style={{ fontSize: '0.85rem', fontWeight: 700, color: '#0F172A' }}>
-                          ₹{parseFloat(order.amount).toFixed(2)}
+                          AED {parseFloat(order.amount).toFixed(2)}
                         </span>
                       </div>
                       

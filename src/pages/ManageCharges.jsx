@@ -123,7 +123,7 @@ export default function ManageCharges() {
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '24px' }}>
               <div className="input-group">
-                <label style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', display: 'block' }}>Base Delivery Charge (₹)</label>
+                <label style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', display: 'block' }}>Base Delivery Charge (AED)</label>
                 <input 
                   type="number" 
                   step="0.01"
@@ -138,7 +138,7 @@ export default function ManageCharges() {
               </div>
 
               <div className="input-group">
-                <label style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', display: 'block' }}>Distance Rate (₹ / KM)</label>
+                <label style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', display: 'block' }}>Distance Rate (AED / KM)</label>
                 <input 
                   type="number" 
                   step="0.01"
@@ -153,7 +153,7 @@ export default function ManageCharges() {
               </div>
 
               <div className="input-group">
-                <label style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', display: 'block' }}>Free Delivery Threshold (₹)</label>
+                <label style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', display: 'block' }}>Free Delivery Threshold (AED)</label>
                 <input 
                   type="number" 
                   step="0.01"
@@ -178,7 +178,7 @@ export default function ManageCharges() {
             
             <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))', gap: '24px' }}>
               <div className="input-group">
-                <label style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', display: 'block' }}>Standard Handling Fee (₹)</label>
+                <label style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', display: 'block' }}>Standard Handling Fee (AED)</label>
                 <input 
                   type="number" 
                   step="0.01"
@@ -193,7 +193,7 @@ export default function ManageCharges() {
               </div>
 
               <div className="input-group">
-                <label style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', display: 'block' }}>Free Handling Threshold (₹)</label>
+                <label style={{ fontWeight: 600, fontSize: '0.9rem', marginBottom: '8px', display: 'block' }}>Free Handling Threshold (AED)</label>
                 <input 
                   type="number" 
                   step="0.01"

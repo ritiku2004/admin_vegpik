@@ -151,10 +151,10 @@ export default function UserDetail() {
                     </div>
                     <div style={{ flex: 1 }}>
                       <p style={{ margin: '0 0 4px 0', fontWeight: 500 }}>{item.product_name}</p>
-                      <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>₹{item.price} x {item.quantity}</p>
+                      <p style={{ margin: 0, fontSize: '0.85rem', color: 'var(--text-secondary)' }}>AED {item.price} x {item.quantity}</p>
                     </div>
                     <div style={{ fontWeight: 600 }}>
-                      ₹{item.price * item.quantity}
+                      AED {item.price * item.quantity}
                     </div>
                   </div>
                 ))}
@@ -188,7 +188,7 @@ export default function UserDetail() {
                           {order.status}
                         </span>
                       </div>
-                      <span style={{ fontWeight: 700, color: 'var(--accent-primary)' }}>₹{order.total_amount}</span>
+                      <span style={{ fontWeight: 700, color: 'var(--accent-primary)' }}>AED {order.total_amount}</span>
                     </div>
                     
                     <div style={{ display: 'flex', alignItems: 'center', gap: '6px', color: 'var(--text-secondary)', fontSize: '0.85rem', marginBottom: '12px' }}>
@@ -207,10 +207,10 @@ export default function UserDetail() {
                             <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
                               {mrp > paid && (
                                 <span style={{ textDecoration: 'line-through', color: 'var(--text-secondary)', fontSize: '0.8rem' }}>
-                                  ₹{(mrp * item.quantity).toFixed(2)}
+                                  AED {(mrp * item.quantity).toFixed(2)}
                                 </span>
                               )}
-                              <span>₹{(paid * item.quantity).toFixed(2)}</span>
+                              <span>AED {(paid * item.quantity).toFixed(2)}</span>
                             </div>
                           </div>
                         );
@@ -231,30 +231,30 @@ export default function UserDetail() {
                         <div style={{ borderTop: '1px dashed var(--border-color)', paddingTop: '12px', fontSize: '0.85rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '4px' }}>
                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                              <span>Item Subtotal (MRP)</span>
-                             <span>₹{itemTotalMRP.toFixed(2)}</span>
+                             <span>AED {itemTotalMRP.toFixed(2)}</span>
                            </div>
                            {productDiscount > 0 && (
                              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#22c55e' }}>
                                <span>Product Discount (10% Off)</span>
-                               <span>-₹{productDiscount.toFixed(2)}</span>
+                               <span>-AED {productDiscount.toFixed(2)}</span>
                              </div>
                            )}
                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                              <span>Handling Charge</span>
-                             <span>₹{Number(order.handling_fee || 0).toFixed(2)}</span>
+                             <span>AED {Number(order.handling_fee || 0).toFixed(2)}</span>
                            </div>
                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                              <span>Delivery Fee</span>
-                             <span>₹{Number(order.delivery_fee || 0).toFixed(2)}</span>
+                             <span>AED {Number(order.delivery_fee || 0).toFixed(2)}</span>
                            </div>
                            <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                              <span>Tip</span>
-                             <span>₹{Number(order.tip_amount || 0).toFixed(2)}</span>
+                             <span>AED {Number(order.tip_amount || 0).toFixed(2)}</span>
                            </div>
                            {Number(order.discount_amount) > 0 && (
                              <div style={{ display: 'flex', justifyContent: 'space-between', color: '#22c55e' }}>
                                <span>Promo/Coupon Discount</span>
-                               <span>-₹{Number(order.discount_amount).toFixed(2)}</span>
+                               <span>-AED {Number(order.discount_amount).toFixed(2)}</span>
                              </div>
                            )}
                         </div>

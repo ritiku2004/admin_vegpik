@@ -37,7 +37,7 @@ export default function Orders({ shops }) {
         }
 
         const itemsList = order.items && order.items.length > 0
-          ? order.items.map(item => `- ${item.product_name || item.name} (Price: ₹${parseFloat(item.price).toFixed(2)}, Qty: ${item.quantity})`).join('\n')
+          ? order.items.map(item => `- ${item.product_name || item.name} (Price: AED ${parseFloat(item.price).toFixed(2)}, Qty: ${item.quantity})`).join('\n')
           : 'No items';
 
         let paymentStatusStr = 'Pending';
@@ -60,7 +60,7 @@ Payment Status: ${paymentStatusStr}
 Order Detail:
 ${itemsList}
 
-Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
+Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
 
         await navigator.clipboard.writeText(copiedText);
         setCopiedOrderId(orderSummary.id);
@@ -179,7 +179,7 @@ Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
                   <td style={{ color: 'var(--text-secondary)' }}>
                     {new Date(order.created_at).toLocaleDateString()} {new Date(order.created_at).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
                   </td>
-                  <td style={{ fontWeight: 600 }}>₹{parseFloat(order.total_amount).toFixed(2)}</td>
+                  <td style={{ fontWeight: 600 }}>AED {parseFloat(order.total_amount).toFixed(2)}</td>
                   <td>
                     <span style={{
                       display: 'inline-flex',

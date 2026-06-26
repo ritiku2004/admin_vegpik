@@ -44,7 +44,7 @@ export default function Layout({ shops }) {
         }
 
         const itemsList = order.items && order.items.length > 0
-          ? order.items.map(item => `- ${item.product_name || item.name} (Price: ₹${parseFloat(item.price).toFixed(2)}, Qty: ${item.quantity})`).join('\n')
+          ? order.items.map(item => `- ${item.product_name || item.name} (Price: AED ${parseFloat(item.price).toFixed(2)}, Qty: ${item.quantity})`).join('\n')
           : 'No items';
 
         let paymentStatusStr = 'Pending';
@@ -67,7 +67,7 @@ Payment Status: ${paymentStatusStr}
 Order Detail:
 ${itemsList}
 
-Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
+Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
 
         await navigator.clipboard.writeText(copiedText);
         setCopied(true);
@@ -193,7 +193,7 @@ Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
             }}>
               <span style={{ color: 'var(--text-secondary)', fontWeight: 500 }}>Total Amount:</span>
               <strong style={{ fontSize: '1.2rem', color: 'var(--text-primary)' }}>
-                ₹{parseFloat(newOrderInfo.amount).toFixed(2)}
+                AED {parseFloat(newOrderInfo.amount).toFixed(2)}
               </strong>
             </div>
 

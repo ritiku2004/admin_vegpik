@@ -121,17 +121,17 @@ export default function GlobalProducts() {
                     {parseFloat(product.discount_percentage) > 0 ? (
                       <div>
                         <div style={{ textDecoration: 'line-through', color: 'var(--text-secondary)', fontSize: '0.85rem' }}>
-                          MRP: ₹{parseFloat(product.mrp_price).toFixed(2)}
+                          MRP: AED {parseFloat(product.mrp_price).toFixed(2)}
                         </div>
                         <div style={{ fontWeight: 600, color: 'var(--accent-success)', display: 'flex', alignItems: 'center', gap: '6px', marginTop: '2px' }}>
-                          ₹{((parseFloat(product.mrp_price) || 0) * (1 - (parseFloat(product.discount_percentage) || 0) / 100)).toFixed(2)}
+                          AED {((parseFloat(product.mrp_price) || 0) * (1 - (parseFloat(product.discount_percentage) || 0) / 100)).toFixed(2)}
                           <span style={{ fontSize: '0.75rem', backgroundColor: 'rgba(16, 185, 129, 0.1)', color: '#16a34a', padding: '2px 6px', borderRadius: '4px', fontWeight: 600 }}>
                             {parseFloat(product.discount_percentage)}% OFF
                           </span>
                         </div>
                       </div>
                     ) : (
-                      <div style={{ fontWeight: 600 }}>₹{parseFloat(product.mrp_price).toFixed(2)}</div>
+                      <div style={{ fontWeight: 600 }}>AED {parseFloat(product.mrp_price).toFixed(2)}</div>
                     )}
                   </td>
                   <td style={{ textAlign: 'right' }}>

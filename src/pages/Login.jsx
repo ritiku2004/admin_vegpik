@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiMail, FiLock, FiLogIn, FiEye, FiEyeOff } from 'react-icons/fi';
 import api from '../api';
+import VegpikLogo from '../assets/Vegpik-logo.png';
 
 export default function Login() {
   const [email, setEmail] = useState('');
@@ -125,22 +126,7 @@ export default function Login() {
       }}>
         {/* Brand Header */}
         <div style={{ marginBottom: '40px', textAlign: 'center' }}>
-          <div style={{
-            display: 'inline-flex',
-            alignItems: 'center',
-            justifyContent: 'center',
-            width: '64px',
-            height: '64px',
-            backgroundColor: '#10b981',
-            borderRadius: '18px',
-            marginBottom: '16px',
-            boxShadow: '0 8px 20px rgba(16, 185, 129, 0.25)',
-            color: '#ffffff',
-            fontSize: '1.8rem',
-            fontWeight: 800
-          }}>
-            FS
-          </div>
+          <img src={VegpikLogo} alt="Vegpik Logo" style={{ width: '64px', height: '64px', borderRadius: '18px', marginBottom: '16px', boxShadow: '0 8px 20px rgba(16, 185, 129, 0.25)' }} />
           <h2 style={{
             fontSize: '1.85rem',
             fontWeight: 800,
@@ -148,7 +134,7 @@ export default function Login() {
             letterSpacing: '-0.75px',
             marginBottom: '6px'
           }}>
-            FreshSabjiHub
+            Vegpik
           </h2>
           <p style={{ color: '#4b5563', fontSize: '0.95rem', fontWeight: 500 }}>
             Admin Control Center
@@ -341,7 +327,7 @@ export default function Login() {
             
             {/* Pulsing Brand Loader Image */}
             <img 
-              src="/loader.png" 
+              src={VegpikLogo} 
               alt="Loading..." 
               style={{
                 width: '80px',

@@ -246,7 +246,7 @@ export default function ProductForm() {
               fontWeight: 600,
               color: 'var(--text-primary)'
             }}>
-              ₹{((parseFloat(formData.mrp_price) || 0) * (1 - (parseFloat(formData.discount_percentage) || 0) / 100)).toFixed(2)}
+              AED {((parseFloat(formData.mrp_price) || 0) * (1 - (parseFloat(formData.discount_percentage) || 0) / 100)).toFixed(2)}
             </div>
           </div>
 

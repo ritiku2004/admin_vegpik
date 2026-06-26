@@ -260,7 +260,7 @@ export default function ManageShops({ shops, refreshShops }) {
               <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
                 <label className="form-label">Location on Map (Click or Drag Pin)</label>
                 <div style={{ height: '250px', width: '100%', borderRadius: '8px', overflow: 'hidden', border: '1px solid var(--border-color)', zIndex: 0 }}>
-                  <MapContainer center={[28.6139, 77.2090]} zoom={12} style={{ height: '100%', width: '100%' }}>
+                  <MapContainer center={[25.2048, 55.2708]} zoom={12} style={{ height: '100%', width: '100%' }}>
                     <TileLayer
                       url="https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png"
                       maxZoom={19}

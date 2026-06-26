@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { FiArrowLeft, FiUser, FiMapPin, FiPackage, FiClock, FiCopy, FiExternalLink, FiShield } from 'react-icons/fi';
+import { FiArrowLeft, FiUser, FiMapPin, FiPackage, FiClock, FiCopy, FiExternalLink, FiShield, FiDownload } from 'react-icons/fi';
 import api from '../api';
 
 export default function OrderDetail() {
@@ -11,6 +11,7 @@ export default function OrderDetail() {
   const [newStatus, setNewStatus] = useState('');
   const [updatingStatus, setUpdatingStatus] = useState(false);
   const [updatingPayment, setUpdatingPayment] = useState(false);
+  const [downloadingReceipt, setDownloadingReceipt] = useState(false);
   const [toastMessage, setToastMessage] = useState('');
 
   useEffect(() => {
@@ -72,6 +73,27 @@ export default function OrderDetail() {
       setUpdatingPayment(false);
     }
   };
+  const handleDownloadReceipt = async () => {
+    if (!order) return;
+    setDownloadingReceipt(true);
+    try {
+      const response = await api.get(`/receipts/${order.id}`, { responseType: 'blob' });
+      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
+      const link = document.createElement('a');
+      link.href = url;
+      link.setAttribute('download', `receipt_${order.order_number}.pdf`);
+      document.body.appendChild(link);
+      link.click();
+      link.remove();
+      window.URL.revokeObjectURL(url);
+      showToast('Receipt downloaded successfully');
+    } catch (err) {
+      console.error(err);
+      alert(err.response?.data?.error || 'Failed to download receipt. It might not be generated yet.');
+    } finally {
+      setDownloadingReceipt(false);
+    }
+  };
 
   const handleCopyOrderInfo = () => {
     if (!order) return;
@@ -96,7 +118,7 @@ export default function OrderDetail() {
     }
 
     const itemsList = order.items && order.items.length > 0
-      ? order.items.map(item => `- ${item.product_name || item.name} (Price: ₹${parseFloat(item.price).toFixed(2)}, Qty: ${item.quantity})`).join('\n')
+      ? order.items.map(item => `- ${item.product_name || item.name} (Price: AED ${parseFloat(item.price).toFixed(2)}, Qty: ${item.quantity})`).join('\n')
       : 'No items';
 
     let paymentStatusStr = 'Pending';
@@ -119,7 +141,7 @@ Payment Status: ${paymentStatusStr}
 Order Detail:
 ${itemsList}
 
-Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
+Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
 
     navigator.clipboard.writeText(copiedText)
       .then(() => {
@@ -284,6 +306,15 @@ Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '0.95rem' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                 <div>
+                  <span style={{ color: 'var(--text-secondary)', display: 'block', fontSize: '0.8rem', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Payment Method</span>
+                  <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1rem' }}>
+                    Cash on Delivery (COD)
+                  </span>
+                </div>
+              </div>
+              
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f1f5f9', paddingTop: '12px' }}>
+                <div>
                   <span style={{ color: 'var(--text-secondary)', display: 'block', fontSize: '0.8rem', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Payment Status</span>
                   <span style={{ 
                     fontWeight: 600, 
@@ -293,35 +324,41 @@ Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
                     {order.payment_status || 'Pending'}
                   </span>
                 </div>
-                {order.payment_status !== 'Paid' && (
+                <div style={{ display: 'flex', gap: '8px' }}>
+                  {order.payment_status !== 'Paid' && (
+                    <button
+                      onClick={handleMarkPaymentDone}
+                      disabled={updatingPayment}
+                      className="btn btn-primary"
+                      style={{
+                        padding: '8px 16px',
+                        fontSize: '0.85rem',
+                        backgroundColor: 'var(--accent-success)',
+                        borderColor: 'var(--accent-success)',
+                        color: 'white',
+                        boxShadow: '0 4px 10px rgba(16, 185, 129, 0.2)'
+                      }}
+                    >
+                      {updatingPayment ? 'Updating...' : 'Mark Paid'}
+                    </button>
+                  )}
                   <button
-                    onClick={handleMarkPaymentDone}
-                    disabled={updatingPayment}
-                    className="btn btn-primary"
+                    onClick={handleDownloadReceipt}
+                    disabled={downloadingReceipt}
+                    className="btn btn-secondary"
                     style={{
+                      display: 'flex',
+                      alignItems: 'center',
+                      gap: '6px',
                       padding: '8px 16px',
                       fontSize: '0.85rem',
-                      backgroundColor: 'var(--accent-success)',
-                      borderColor: 'var(--accent-success)',
-                      color: 'white',
-                      boxShadow: '0 4px 10px rgba(16, 185, 129, 0.2)'
+                      borderRadius: '8px',
+                      cursor: 'pointer'
                     }}
                   >
-                    {updatingPayment ? 'Updating...' : 'Mark Paid'}
+                    <FiDownload /> {downloadingReceipt ? 'Downloading...' : 'Receipt'}
                   </button>
-                )}
-              </div>
-              <div>
-                <span style={{ color: 'var(--text-secondary)', display: 'block', fontSize: '0.8rem', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Razorpay Order ID</span>
-                <span style={{ fontWeight: 500, color: 'var(--text-primary)', fontFamily: 'monospace' }}>
-                  {order.razorpay_order_id || 'N/A'}
-                </span>
-              </div>
-              <div>
-                <span style={{ color: 'var(--text-secondary)', display: 'block', fontSize: '0.8rem', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Razorpay Payment ID</span>
-                <span style={{ fontWeight: 500, color: 'var(--text-primary)', fontFamily: 'monospace' }}>
-                  {order.razorpay_payment_id || 'N/A'}
-                </span>
+                </div>
               </div>
             </div>
           </div>
@@ -403,7 +440,7 @@ Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
           
           {/* Order Items & Summary Card */}
-          <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column', height: '100%' }}>
+          <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px' }}>
               <FiClock style={{ fontSize: '1.2rem', color: 'var(--accent-primary)' }} />
               <h2 style={{ fontSize: '1.2rem', fontWeight: 600, margin: 0 }}>Items & Pricing</h2>
@@ -426,10 +463,10 @@ Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
                     )}
                     <div>
                       <p style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--text-primary)', margin: '0 0 4px 0' }}>{item.product_name || item.name}</p>
-                      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>Qty: {item.quantity} × ₹{parseFloat(item.price).toFixed(2)}</p>
+                      <p style={{ fontSize: '0.85rem', color: 'var(--text-secondary)', margin: 0 }}>Qty: {item.quantity} × AED {parseFloat(item.price).toFixed(2)}</p>
                     </div>
                   </div>
-                  <p style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--text-primary)', margin: 0 }}>₹{(item.quantity * parseFloat(item.price)).toFixed(2)}</p>
+                  <p style={{ fontWeight: 600, fontSize: '1rem', color: 'var(--text-primary)', margin: 0 }}>AED {(item.quantity * parseFloat(item.price)).toFixed(2)}</p>
                 </div>
               ))}
               {(!order.items || order.items.length === 0) && (
@@ -441,36 +478,36 @@ Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
             <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.95rem', marginTop: 'auto' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--text-secondary)' }}>Items Subtotal</span>
-                <span style={{ fontWeight: 500 }}>₹{parseFloat(itemsSubtotal).toFixed(2)}</span>
+                <span style={{ fontWeight: 500 }}>AED {parseFloat(itemsSubtotal).toFixed(2)}</span>
               </div>
               {parseFloat(order.delivery_fee) > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Delivery Fee</span>
-                  <span style={{ fontWeight: 500 }}>₹{parseFloat(order.delivery_fee).toFixed(2)}</span>
+                  <span style={{ fontWeight: 500 }}>AED {parseFloat(order.delivery_fee).toFixed(2)}</span>
                 </div>
               )}
               {parseFloat(order.handling_fee) > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Handling Fee</span>
-                  <span style={{ fontWeight: 500 }}>₹{parseFloat(order.handling_fee).toFixed(2)}</span>
+                  <span style={{ fontWeight: 500 }}>AED {parseFloat(order.handling_fee).toFixed(2)}</span>
                 </div>
               )}
               {parseFloat(order.tip_amount) > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                   <span style={{ color: 'var(--text-secondary)' }}>Tip</span>
-                  <span style={{ fontWeight: 500 }}>₹{parseFloat(order.tip_amount).toFixed(2)}</span>
+                  <span style={{ fontWeight: 500 }}>AED {parseFloat(order.tip_amount).toFixed(2)}</span>
                 </div>
               )}
               {parseFloat(order.discount_amount) > 0 && (
                 <div style={{ display: 'flex', justifyContent: 'space-between', color: 'var(--accent-danger)' }}>
                   <span>Discount</span>
-                  <span style={{ fontWeight: 600 }}>-₹{parseFloat(order.discount_amount).toFixed(2)}</span>
+                  <span style={{ fontWeight: 600 }}>-AED {parseFloat(order.discount_amount).toFixed(2)}</span>
                 </div>
               )}
               
               <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '2px solid #cbd5e1', paddingTop: '14px', marginTop: '6px', fontWeight: 700, fontSize: '1.15rem', color: 'var(--text-primary)' }}>
                 <span>Grand Total</span>
-                <span style={{ color: 'var(--accent-primary)' }}>₹{parseFloat(order.total_amount).toFixed(2)}</span>
+                <span style={{ color: 'var(--accent-primary)' }}>AED {parseFloat(order.total_amount).toFixed(2)}</span>
               </div>
             </div>
 
@@ -480,22 +517,19 @@ Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
 
       </div>
 
-      {/* Payment Logs Section */}
+      {/* Order Activity Log */}
       <div className="glass-panel" style={{ padding: '24px', marginTop: '24px' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px' }}>
           <FiClock style={{ fontSize: '1.2rem', color: 'var(--accent-primary)' }} />
-          <h2 style={{ fontSize: '1.2rem', fontWeight: 600, margin: 0 }}>Payment Transactions & Reconciliation Logs</h2>
+          <h2 style={{ fontSize: '1.2rem', fontWeight: 600, margin: 0 }}>Order Activity Log</h2>
         </div>
         <div className="table-container" style={{ overflowX: 'auto' }}>
           <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
             <thead>
               <tr style={{ borderBottom: '2px solid #f1f5f9' }}>
                 <th style={{ padding: '12px 8px' }}>Log ID</th>
-                <th style={{ padding: '12px 8px' }}>Event Type</th>
-                <th style={{ padding: '12px 8px' }}>Razorpay Order ID</th>
-                <th style={{ padding: '12px 8px' }}>Razorpay Payment ID</th>
+                <th style={{ padding: '12px 8px' }}>Event</th>
                 <th style={{ padding: '12px 8px' }}>Timestamp</th>
-                <th style={{ padding: '12px 8px', textAlign: 'right' }}>Actions</th>
               </tr>
             </thead>
             <tbody>
@@ -512,27 +546,16 @@ Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
                       backgroundColor: log.event_type.includes('success') || log.event_type.includes('confirm') ? 'rgba(16, 185, 129, 0.1)' : log.event_type.includes('fail') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
                       color: log.event_type.includes('success') || log.event_type.includes('confirm') ? '#10b981' : log.event_type.includes('fail') ? '#ef4444' : '#f59e0b'
                     }}>
-                      {log.event_type}
+                      {log.event_type.replace(/_/g, ' ')}
                     </span>
                   </td>
-                  <td style={{ padding: '12px 8px', fontFamily: 'monospace', fontSize: '0.85rem' }}>{log.razorpay_order_id || 'N/A'}</td>
-                  <td style={{ padding: '12px 8px', fontFamily: 'monospace', fontSize: '0.85rem' }}>{log.razorpay_payment_id || 'N/A'}</td>
                   <td style={{ padding: '12px 8px', color: 'var(--text-secondary)' }}>{new Date(log.created_at).toLocaleString()}</td>
-                  <td style={{ padding: '12px 8px', textAlign: 'right' }}>
-                    <button 
-                      className="btn"
-                      onClick={() => alert(JSON.stringify(JSON.parse(log.payload || '{}'), null, 2))}
-                      style={{ padding: '4px 8px', fontSize: '0.8rem', border: '1px solid #cbd5e1' }}
-                    >
-                      Raw Payload
-                    </button>
-                  </td>
                 </tr>
               ))}
               {(!order.payment_logs || order.payment_logs.length === 0) && (
                 <tr>
-                  <td colSpan="6" style={{ textAlign: 'center', padding: '24px', color: 'var(--text-secondary)' }}>
-                    No payment logs recorded for this order yet.
+                  <td colSpan="3" style={{ textAlign: 'center', padding: '24px', color: 'var(--text-secondary)' }}>
+                    No activity logs recorded for this order.
                   </td>
                 </tr>
               )}
@@ -543,4 +566,6 @@ Total Amount: ₹${parseFloat(order.total_amount).toFixed(2)}`;
 
     </div>
   );
-}
+};
+
+

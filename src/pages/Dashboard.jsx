@@ -43,7 +43,7 @@ export default function Dashboard() {
   }, [timeframe]);
 
   const displayStats = [
-    { title: 'Total Revenue', value: `₹${(stats?.revenue || 0).toLocaleString('en-IN', { maximumFractionDigits: 2 })}`, icon: <FiTrendingUp />, color: 'var(--accent-primary)' },
+    { title: 'Total Revenue', value: `AED ${(stats?.revenue || 0).toLocaleString('en-AE', { maximumFractionDigits: 2 })}`, icon: <FiTrendingUp />, color: 'var(--accent-primary)' },
     { title: 'Total Orders', value: (stats?.totalSales || 0).toLocaleString(), icon: <FiShoppingBag />, color: 'var(--accent-warning)' },
     { title: 'Active Orders', value: (stats?.activeOrders || 0).toLocaleString(), icon: <FiBox />, color: '#ef4444' },
     { title: 'Products In Stock', value: (stats?.productsAvailable || 0).toLocaleString(), icon: <FiBox />, color: 'var(--accent-success)' },
@@ -135,11 +135,11 @@ export default function Dashboard() {
                 </linearGradient>
               </defs>
               <XAxis dataKey="date" stroke="#94a3b8" fontSize={12} tickMargin={10} minTickGap={20} />
-              <YAxis stroke="#94a3b8" fontSize={12} tickFormatter={(value) => `₹${value}`} />
+              <YAxis stroke="#94a3b8" fontSize={12} tickFormatter={(value) => `AED ${value}`} />
               <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
               <Tooltip 
                 contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 10px 25px rgba(0,0,0,0.1)' }}
-                formatter={(value) => [`₹${parseFloat(value).toFixed(2)}`, 'Revenue']}
+                formatter={(value) => [`AED ${parseFloat(value).toFixed(2)}`, 'Revenue']}
                 labelStyle={{ color: '#64748b', fontWeight: 600, marginBottom: '8px' }}
               />
               <Area 
@@ -184,7 +184,7 @@ export default function Dashboard() {
                   ))}
                 </Pie>
                 <Tooltip 
-                  formatter={(value) => [`₹${parseFloat(value).toFixed(2)}`, 'Revenue']}
+                  formatter={(value) => [`AED ${parseFloat(value).toFixed(2)}`, 'Revenue']}
                   contentStyle={{ borderRadius: '12px', border: 'none', boxShadow: '0 4px 12px rgba(0,0,0,0.1)' }}
                 />
                 <Legend />

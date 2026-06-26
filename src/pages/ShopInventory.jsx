@@ -88,7 +88,7 @@ export default function ShopInventory({ shops }) {
                     </div>
                   </td>
                   <td style={{ color: 'var(--text-secondary)' }}>{item.category_name}</td>
-                  <td style={{ fontWeight: 500 }}>₹{parseFloat(item.price).toFixed(2)}</td>
+                  <td style={{ fontWeight: 500 }}>AED {parseFloat(item.price).toFixed(2)}</td>
                   <td>
                     <span style={{
                       display: 'inline-flex',
