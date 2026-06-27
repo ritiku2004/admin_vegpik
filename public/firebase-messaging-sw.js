@@ -4,12 +4,13 @@ importScripts('https://www.gstatic.com/firebasejs/9.22.0/firebase-messaging-comp
 
 // Config object template - messagingSenderId is the essential part for background FCM
 const firebaseConfig = {
-  apiKey: "AIzaSyCqprvSeciykqKnLAKzaGCbX2IW-5JXNVc",
-  authDomain: "freshsabjihub.firebaseapp.com",
-  projectId: "freshsabjihub",
-  storageBucket: "freshsabjihub.firebasestorage.app",
-  messagingSenderId: "945901560169",
-  appId: "1:945901560169:web:45b59ffbd70eec37551df8",
+  apiKey: "AIzaSyAD9kTVzFn0m1wZR7VxidzVKWtaP0VqhZg",
+  authDomain: "vegpik-40a13.firebaseapp.com",
+  projectId: "vegpik-40a13",
+  storageBucket: "vegpik-40a13.firebasestorage.app",
+  messagingSenderId: "913055328706",
+  appId: "1:913055328706:web:dcc7d5314835cac23cce5b",
+  measurementId: "G-GNN3YCG2F8"
 };
 
 const seenOrderIds = new Set();

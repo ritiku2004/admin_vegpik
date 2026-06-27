@@ -4,12 +4,13 @@ import { getMessaging, getToken, onMessage } from 'firebase/messaging';
 // Note: To receive notifications in browser/web client, you must configure a Firebase Web App.
 // If config is not supplied, it will fallback to console warnings without crashing.
 const firebaseConfig = {
-  apiKey: import.meta.env.VITE_FIREBASE_API_KEY || "AIzaSyFakeKeyForInitialSetup",
-  authDomain: `${import.meta.env.VITE_FIREBASE_PROJECT_ID || "freshsabjihub"}.firebaseapp.com`,
-  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID || "freshsabjihub",
-  storageBucket: `${import.meta.env.VITE_FIREBASE_PROJECT_ID || "freshsabjihub"}.appspot.com`,
-  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID || "1234567890",
-  appId: import.meta.env.VITE_FIREBASE_APP_ID || "1:1234567890:web:abcdef123456",
+  apiKey: import.meta.env.VITE_FIREBASE_API_KEY,
+  authDomain: import.meta.env.VITE_FIREBASE_AUTH_DOMAIN,
+  projectId: import.meta.env.VITE_FIREBASE_PROJECT_ID,
+  storageBucket: import.meta.env.VITE_FIREBASE_STORAGE_BUCKET,
+  messagingSenderId: import.meta.env.VITE_FIREBASE_MESSAGING_SENDER_ID,
+  appId: import.meta.env.VITE_FIREBASE_APP_ID,
+  measurementId: import.meta.env.VITE_FIREBASE_MEASUREMENT_ID,
 };
 
 let messaging = null;
