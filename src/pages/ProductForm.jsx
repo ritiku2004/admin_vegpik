@@ -146,6 +146,7 @@ export default function ProductForm() {
         mrp_price: parseFloat(formData.mrp_price) || 0,
         discount_percentage: parseFloat(formData.discount_percentage) || 0,
         quantity: parseFloat(formData.quantity) || 1,
+        sku: formData.sku ? formData.sku.trim() : null,
         features: features.filter(f => f.feature_name.trim() !== '' && f.feature_value.trim() !== '')
       };
 
