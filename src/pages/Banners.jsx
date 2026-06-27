@@ -35,6 +35,8 @@ export default function Banners() {
       fetchBanners();
     } catch (err) {
       console.error(err);
+      const msg = err.response?.data?.message || 'Failed to delete banner.';
+      alert(msg);
     }
   };
 

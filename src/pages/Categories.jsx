@@ -28,6 +28,8 @@ export default function Categories() {
       fetchCategories();
     } catch (err) {
       console.error(err);
+      const msg = err.response?.data?.message || 'Failed to delete category. Ensure no products are attached.';
+      alert(msg);
     }
   };
 

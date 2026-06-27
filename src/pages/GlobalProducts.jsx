@@ -40,6 +40,8 @@ export default function GlobalProducts() {
       fetchProducts();
     } catch (err) {
       console.error(err);
+      const msg = err.response?.data?.message || 'Failed to delete product. Ensure it is not attached anywhere.';
+      alert(msg);
     }
   };
 
