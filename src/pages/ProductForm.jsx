@@ -128,13 +128,24 @@ export default function ProductForm() {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!formData.category_id) {
+      alert('Please select a category for this product.');
+      return;
+    }
+    
+    if (!formData.image_url) {
+      alert('Please upload a product image before saving.');
+      return;
+    }
+
     try {
       const payload = {
         ...formData,
-        category_id: parseInt(formData.category_id),
-        mrp_price: parseFloat(formData.mrp_price),
-        discount_percentage: parseFloat(formData.discount_percentage || 0),
-        quantity: parseFloat(formData.quantity),
+        category_id: parseInt(formData.category_id, 10),
+        mrp_price: parseFloat(formData.mrp_price) || 0,
+        discount_percentage: parseFloat(formData.discount_percentage) || 0,
+        quantity: parseFloat(formData.quantity) || 1,
         features: features.filter(f => f.feature_name.trim() !== '' && f.feature_value.trim() !== '')
       };
 
