@@ -243,8 +243,8 @@ export default function ProductForm() {
               height: '42px', 
               padding: '0 16px', 
               borderRadius: '8px', 
-              background: '#f1f5f9', 
-              border: '1px solid #cbd5e1', 
+              background: 'var(--bg-input)', 
+              border: '1px solid var(--glass-border)', 
               fontWeight: 600,
               color: 'var(--text-primary)'
             }}>
@@ -321,7 +321,7 @@ export default function ProductForm() {
             <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block' }}>Product Image</label>
             {formData.image_url ? (
               <div style={{ display: 'flex', alignItems: 'center', gap: '16px', marginTop: '8px' }}>
-                <img src={formData.image_url} alt="Product Preview" style={{ width: '100px', height: '100px', borderRadius: '12px', objectFit: 'cover', border: '1px solid #cbd5e1' }} />
+                <img src={formData.image_url} alt="Product Preview" style={{ width: '100px', height: '100px', borderRadius: '12px', objectFit: 'cover', border: '1px solid var(--glass-border)' }} />
                 <button 
                   type="button" 
                   className="btn" 
@@ -333,7 +333,7 @@ export default function ProductForm() {
               </div>
             ) : (
               <div style={{
-                border: '2px dashed #cbd5e1',
+                border: '2px dashed var(--glass-border)',
                 borderRadius: '12px',
                 padding: '36px 24px',
                 textAlign: 'center',
@@ -369,7 +369,7 @@ export default function ProductForm() {
             )}
           </div>
 
-          <div style={{ gridColumn: '1 / -1', borderTop: '1px solid #cbd5e1', paddingTop: '24px', marginTop: '16px' }}>
+          <div style={{ gridColumn: '1 / -1', borderTop: '1px solid var(--glass-border)', paddingTop: '24px', marginTop: '16px' }}>
             <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '16px' }}>Product Specifications</h3>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
@@ -425,8 +425,8 @@ export default function ProductForm() {
             ></textarea>
           </div>
 
-          <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px', borderTop: '1px solid #cbd5e1', paddingTop: '24px' }}>
-            <Link to="/global-products" className="btn" style={{ textDecoration: 'none', border: '1px solid #cbd5e1', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+          <div style={{ gridColumn: '1 / -1', display: 'flex', justifyContent: 'flex-end', gap: '16px', marginTop: '16px', borderTop: '1px solid var(--glass-border)', paddingTop: '24px' }}>
+            <Link to="/global-products" className="btn btn-secondary" style={{ textDecoration: 'none', display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
               Cancel
             </Link>
             <button type="submit" disabled={uploading} className="btn btn-primary" style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>

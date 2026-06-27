@@ -65,7 +65,7 @@ export default function GlobalProducts() {
 
       <div className="glass-panel" style={{ padding: '24px' }}>
         <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
-          <div className="input-group" style={{ flex: '1 1 250px', margin: 0, flexDirection: 'row', alignItems: 'center', background: 'var(--bg-primary)', borderRadius: '8px', padding: '0 16px', border: '1px solid #cbd5e1' }}>
+          <div className="input-group" style={{ flex: '1 1 250px', margin: 0, flexDirection: 'row', alignItems: 'center', background: 'var(--bg-input)', borderRadius: '10px', padding: '0 16px', border: '1px solid var(--glass-border)' }}>
             <FiSearch style={{ color: 'var(--text-secondary)' }} />
             <input 
               type="text" 

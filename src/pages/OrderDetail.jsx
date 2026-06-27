@@ -452,13 +452,13 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
             {/* Items List */}
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', marginBottom: '24px', overflowY: 'auto', maxHeight: '380px', paddingRight: '4px' }}>
               {order.items && order.items.map((item, index) => (
-                <div key={item.id || index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '16px', borderBottom: '1px solid #f8fafc' }}>
+                <div key={item.id || index} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingBottom: '16px', borderBottom: '1px solid var(--glass-border)' }}>
                   <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
                     {item.image_url && (
                       <img 
                         src={item.image_url} 
                         alt={item.product_name || item.name} 
-                        style={{ width: '56px', height: '56px', objectFit: 'cover', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                        style={{ width: '56px', height: '56px', objectFit: 'cover', borderRadius: '8px', border: '1px solid var(--glass-border)' }}
                       />
                     )}
                     <div>
@@ -475,7 +475,7 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
             </div>
 
             {/* Price Calculations */}
-            <div style={{ background: '#f8fafc', padding: '20px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.95rem', marginTop: 'auto' }}>
+            <div style={{ background: 'var(--bg-input)', border: '1px solid var(--glass-border)', padding: '20px', borderRadius: '16px', display: 'flex', flexDirection: 'column', gap: '10px', fontSize: '0.95rem', marginTop: 'auto' }}>
               <div style={{ display: 'flex', justifyContent: 'space-between' }}>
                 <span style={{ color: 'var(--text-secondary)' }}>Items Subtotal</span>
                 <span style={{ fontWeight: 500 }}>AED {parseFloat(itemsSubtotal).toFixed(2)}</span>
@@ -505,7 +505,7 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
                 </div>
               )}
               
-              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '2px solid #cbd5e1', paddingTop: '14px', marginTop: '6px', fontWeight: 700, fontSize: '1.15rem', color: 'var(--text-primary)' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', borderTop: '1px solid var(--glass-border)', paddingTop: '14px', marginTop: '6px', fontWeight: 700, fontSize: '1.15rem', color: 'var(--text-primary)' }}>
                 <span>Grand Total</span>
                 <span style={{ color: 'var(--accent-primary)' }}>AED {parseFloat(order.total_amount).toFixed(2)}</span>
               </div>

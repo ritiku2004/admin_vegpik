@@ -4,13 +4,13 @@ import Select from 'react-select';
 const customStyles = {
   control: (provided, state) => ({
     ...provided,
-    backgroundColor: '#ffffff',
-    borderColor: state.isFocused ? 'var(--accent-primary)' : '#cbd5e1',
-    boxShadow: state.isFocused ? '0 0 0 3px rgba(59, 130, 246, 0.15)' : 'none',
-    borderRadius: '8px',
+    backgroundColor: 'var(--bg-input)',
+    borderColor: state.isFocused ? 'var(--accent-primary)' : 'var(--glass-border)',
+    boxShadow: state.isFocused ? '0 0 0 3px rgba(34, 197, 94, 0.15)' : 'none',
+    borderRadius: '10px',
     minHeight: '46px',
     '&:hover': {
-      borderColor: state.isFocused ? 'var(--accent-primary)' : '#94a3b8'
+      borderColor: state.isFocused ? 'var(--accent-primary)' : 'rgba(34, 197, 94, 0.25)'
     }
   }),
   valueContainer: (provided) => ({
@@ -19,14 +19,23 @@ const customStyles = {
   }),
   input: (provided) => ({
     ...provided,
+    color: 'var(--text-primary)',
     margin: '0px',
+  }),
+  singleValue: (provided) => ({
+    ...provided,
+    color: 'var(--text-primary)'
+  }),
+  placeholder: (provided) => ({
+    ...provided,
+    color: 'var(--text-secondary)'
   }),
   indicatorSeparator: () => ({
     display: 'none',
   }),
   dropdownIndicator: (provided) => ({
     ...provided,
-    color: '#64748b',
+    color: 'var(--text-secondary)',
     '&:hover': {
       color: 'var(--accent-primary)'
     }
@@ -36,21 +45,22 @@ const customStyles = {
     backgroundColor: state.isSelected 
       ? 'var(--accent-primary)' 
       : state.isFocused 
-        ? 'rgba(59, 130, 246, 0.1)' 
+        ? 'var(--accent-light)' 
         : 'transparent',
-    color: state.isSelected ? 'white' : 'var(--text-primary)',
+    color: state.isSelected ? '#ffffff' : 'var(--text-primary)',
     cursor: 'pointer',
     padding: '12px 16px',
     '&:active': {
       backgroundColor: 'var(--accent-primary)',
-      color: 'white'
+      color: '#ffffff'
     }
   }),
   menu: (provided) => ({
     ...provided,
+    backgroundColor: 'var(--bg-elevated)',
     borderRadius: '12px',
     overflow: 'hidden',
-    boxShadow: '0 10px 40px -10px rgba(0,0,0,0.15)',
+    boxShadow: 'var(--glass-shadow)',
     border: '1px solid var(--glass-border)',
     zIndex: 9999,
     marginTop: '4px'

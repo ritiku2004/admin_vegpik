@@ -48,21 +48,21 @@ export default function Sidebar({ isOpen, setIsOpen }) {
     >
       {/* Brand Header */}
       <div style={{
-        padding: '20px 20px 16px',
+        padding: '9px',
         borderBottom: '1px solid var(--glass-border)',
         display: 'flex',
         alignItems: 'center',
-        justifyContent: 'space-between',
-        gap: '12px',
+        justifyContent: 'center',
+        position: 'relative',
         flexShrink: 0
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', flex: 1 }}>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
           <img 
             src={logo} 
             alt="Vegpik Logo" 
             style={{
-              height: '36px',
-              maxWidth: '150px',
+              height: '52px',
+              maxWidth: '180px',
               objectFit: 'contain',
               flexShrink: 0
             }} 
@@ -73,9 +73,18 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         <button
           className="mobile-close-btn"
           onClick={() => setIsOpen(false)}
-          style={{ color: 'var(--text-secondary)' }}
+          style={{ 
+            color: 'var(--text-secondary)',
+            position: 'absolute',
+            right: '16px',
+            top: '50%',
+            transform: 'translateY(-50%)',
+            background: 'transparent',
+            border: 'none',
+            cursor: 'pointer'
+          }}
         >
-          <FiX />
+          <FiX size={20} />
         </button>
       </div>
 

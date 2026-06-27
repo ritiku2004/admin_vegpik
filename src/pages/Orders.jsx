@@ -125,18 +125,11 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
           <select
             value={statusFilter}
             onChange={(e) => setStatusFilter(e.target.value)}
+            className="input-field"
             style={{
-              padding: '10px 16px',
-              borderRadius: '8px',
-              border: '1px solid var(--glass-border)',
-              backgroundColor: '#ffffff',
-              color: 'var(--text-primary)',
-              fontWeight: 500,
-              fontSize: '0.9rem',
-              cursor: 'pointer',
-              outline: 'none',
+              width: 'auto',
               minWidth: '200px',
-              boxShadow: '0 2px 8px rgba(0, 0, 0, 0.05)'
+              paddingRight: '38px'
             }}
           >
             {['All', 'Pending Payment', 'Placed', 'Processing', 'Shipped', 'Delivered', 'Cancelled'].map(status => {

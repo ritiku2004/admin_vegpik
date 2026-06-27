@@ -46,10 +46,13 @@ export default function Header({ toggleSidebar }) {
         {/* Brand (visible on desktop) */}
         <div className="desktop-brand" style={{ display: 'flex', alignItems: 'center' }}>
           <span style={{
-            fontWeight: 700,
-            fontSize: '1.25rem',
-            color: 'var(--text-primary)',
-            letterSpacing: '-0.3px'
+            fontWeight: 800,
+            fontSize: '1.4rem',
+            letterSpacing: '-0.5px',
+            background: 'linear-gradient(to right, #10b981, #34d399)',
+            WebkitBackgroundClip: 'text',
+            WebkitTextFillColor: 'transparent',
+            textShadow: '0 2px 10px rgba(16,185,129,0.1)'
           }}>
             Admin Panel
           </span>
