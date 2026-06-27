@@ -5,6 +5,7 @@ import {
   FiMapPin, FiX, FiLogOut, FiUsers, FiDollarSign
 } from 'react-icons/fi'
 import { useNotification } from '../context/NotificationContext'
+import logo from '../assets/logo.png'
 
 const globalLinks = [
   { name: 'Dashboard',       path: '/dashboard',       icon: <FiHome /> },
@@ -55,34 +56,17 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         gap: '12px',
         flexShrink: 0
       }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          {/* Logo mark */}
-          <div style={{
-            width: '36px', height: '36px',
-            background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-            borderRadius: '10px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '1.1rem',
-            boxShadow: '0 4px 12px rgba(34,197,94,0.35)',
-            flexShrink: 0
-          }}>
-            🥦
-          </div>
-          <div>
-            <div style={{
-              fontSize: '1.1rem', fontWeight: 800,
-              background: 'linear-gradient(to right, #22c55e, #86efac)',
-              WebkitBackgroundClip: 'text',
-              WebkitTextFillColor: 'transparent',
-              letterSpacing: '-0.3px',
-              lineHeight: 1.1
-            }}>
-              Vegpik
-            </div>
-            <div style={{ fontSize: '0.7rem', color: 'var(--text-muted)', fontWeight: 500 }}>
-              Admin Panel
-            </div>
-          </div>
+        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'flex-start', flex: 1 }}>
+          <img 
+            src={logo} 
+            alt="Vegpik Logo" 
+            style={{
+              height: '36px',
+              maxWidth: '150px',
+              objectFit: 'contain',
+              flexShrink: 0
+            }} 
+          />
         </div>
 
         {/* Mobile close */}

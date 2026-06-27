@@ -111,7 +111,7 @@ export default function ManageCharges() {
       )}
 
       {/* Main Settings Card */}
-      <div className="glass-panel" style={{ padding: '32px', maxWidth: '800px' }}>
+      <div className="glass-panel" style={{ padding: '32px', width: '100%' }}>
         <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '32px' }}>
           
           {/* Section 1: Delivery Charges */}

@@ -44,38 +44,14 @@ export default function Header({ toggleSidebar }) {
         </button>
 
         {/* Brand (visible on desktop) */}
-        <div className="desktop-brand" style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <div style={{
-            width: '32px', height: '32px',
-            background: 'linear-gradient(135deg, #22c55e, #16a34a)',
-            borderRadius: '8px',
-            display: 'flex', alignItems: 'center', justifyContent: 'center',
-            fontSize: '1rem',
-            boxShadow: '0 4px 12px rgba(34,197,94,0.3)',
-            flexShrink: 0
-          }}>
-            🥦
-          </div>
+        <div className="desktop-brand" style={{ display: 'flex', alignItems: 'center' }}>
           <span style={{
-            fontWeight: 800,
-            fontSize: '1.2rem',
-            letterSpacing: '-0.4px',
-            background: 'linear-gradient(to right, #22c55e, #86efac)',
-            WebkitBackgroundClip: 'text',
-            WebkitTextFillColor: 'transparent',
+            fontWeight: 700,
+            fontSize: '1.25rem',
+            color: 'var(--text-primary)',
+            letterSpacing: '-0.3px'
           }}>
-            Vegpik
-          </span>
-          <span style={{
-            fontSize: '0.75rem',
-            color: 'var(--text-muted)',
-            fontWeight: 500,
-            background: 'rgba(34,197,94,0.1)',
-            border: '1px solid rgba(34,197,94,0.2)',
-            padding: '2px 8px',
-            borderRadius: '20px'
-          }}>
-            Admin
+            Admin Panel
           </span>
         </div>
       </div>

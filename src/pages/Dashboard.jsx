@@ -25,6 +25,16 @@ export default function Dashboard() {
     topProductsData: []
   });
 
+  const [windowWidth, setWindowWidth] = useState(typeof window !== 'undefined' ? window.innerWidth : 1200);
+
+  useEffect(() => {
+    const handleResize = () => setWindowWidth(window.innerWidth);
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
+
+  const isMobile = windowWidth < 640;
+
   useEffect(() => {
     const fetchStats = async () => {
       setLoading(true);
@@ -60,7 +70,7 @@ export default function Dashboard() {
         
         {/* Timeframe Toggles */}
         <div style={{ display: 'flex', background: 'var(--bg-elevated)', padding: '4px', borderRadius: '12px', border: '1px solid var(--glass-border)', flexWrap: 'wrap', gap: '2px' }}>
-          {['week', '15days', 'month', 'overall'].map((tf) => (
+          {['today', 'week', '15days', 'month', 'overall'].map((tf) => (
             <button
               key={tf}
               onClick={() => setTimeframe(tf)}
@@ -76,7 +86,7 @@ export default function Dashboard() {
                 whiteSpace: 'nowrap',
               }}
             >
-              {tf === 'week' ? '7 Days' : tf === '15days' ? '15 Days' : tf === 'month' ? '1 Month' : 'Overall'}
+              {tf === 'today' ? 'Today' : tf === 'week' ? '7 Days' : tf === '15days' ? '15 Days' : tf === 'month' ? '1 Month' : 'Overall'}
             </button>
           ))}
         </div>
@@ -84,34 +94,34 @@ export default function Dashboard() {
 
       <div style={{
         display: 'grid',
-        gridTemplateColumns: 'repeat(auto-fit, minmax(240px, 1fr))',
-        gap: '24px'
+        gridTemplateColumns: isMobile ? '1fr' : 'repeat(auto-fit, minmax(240px, 1fr))',
+        gap: isMobile ? '16px' : '24px'
       }}>
         {displayStats.map((stat, i) => (
           <div 
             key={i} 
             className="glass-panel" 
             style={{ 
-              padding: '24px', 
+              padding: isMobile ? '16px' : '24px', 
               display: 'flex', 
               alignItems: 'center', 
-              gap: '20px',
-              gridColumn: stat.title === 'Total Revenue' ? 'span 2' : 'auto'
+              gap: isMobile ? '12px' : '20px',
+              gridColumn: (stat.title === 'Total Revenue' && !isMobile) ? 'span 2' : 'auto'
             }}
           >
             <div style={{
-              width: '56px', height: '56px',
+              width: isMobile ? '44px' : '56px', height: isMobile ? '44px' : '56px',
               borderRadius: '16px',
               backgroundColor: `${stat.color}15`,
               display: 'flex', alignItems: 'center', justifyContent: 'center',
               color: stat.color,
-              fontSize: '1.8rem'
+              fontSize: isMobile ? '1.3rem' : '1.8rem'
             }}>
               {stat.icon}
             </div>
-            <div>
-              <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', marginBottom: '4px', fontWeight: 500 }}>{stat.title}</p>
-              <h2 style={{ fontSize: '1.8rem', fontWeight: 700 }}>
+            <div style={{ flex: 1, minWidth: 0 }}>
+              <p style={{ color: 'var(--text-secondary)', fontSize: isMobile ? '0.78rem' : '0.9rem', marginBottom: '4px', fontWeight: 500, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>{stat.title}</p>
+              <h2 style={{ fontSize: isMobile ? '1.35rem' : '1.8rem', fontWeight: 700, overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap' }}>
                 {loading ? '...' : stat.value}
               </h2>
             </div>
@@ -164,12 +174,12 @@ export default function Dashboard() {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(350px, 1fr))', gap: '24px', marginTop: '24px' }}>
         
         {/* Category Sales Donut */}
-        <div className="glass-panel" style={{ padding: '24px', height: '350px' }}>
+        <div className="glass-panel" style={{ padding: '24px', height: '450px' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '16px' }}>Sales by Category</h3>
           {loading ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'var(--text-secondary)' }}>Loading...</div>
           ) : stats.categoryData && stats.categoryData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={360}>
               <PieChart>
                 <Pie
                   data={stats.categoryData}
@@ -197,12 +207,12 @@ export default function Dashboard() {
         </div>
 
         {/* Order Status Donut */}
-        <div className="glass-panel" style={{ padding: '24px', height: '350px' }}>
+        <div className="glass-panel" style={{ padding: '24px', height: '450px' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '16px' }}>Order Fulfillment</h3>
           {loading ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'var(--text-secondary)' }}>Loading...</div>
           ) : stats.orderStatusData && stats.orderStatusData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={360}>
               <PieChart>
                 <Pie
                   data={stats.orderStatusData}
@@ -230,12 +240,12 @@ export default function Dashboard() {
         </div>
 
         {/* Top Products Bar Chart */}
-        <div className="glass-panel" style={{ padding: '24px', height: '350px' }}>
+        <div className="glass-panel" style={{ padding: '24px', height: '450px' }}>
           <h3 style={{ fontSize: '1.1rem', fontWeight: 600, marginBottom: '16px' }}>Top 5 Products</h3>
           {loading ? (
             <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%', color: 'var(--text-secondary)' }}>Loading...</div>
           ) : stats.topProductsData && stats.topProductsData.length > 0 ? (
-            <ResponsiveContainer width="100%" height="100%">
+            <ResponsiveContainer width="100%" height={360}>
               <BarChart data={stats.topProductsData} margin={{ top: 10, right: 10, left: -20, bottom: 0 }}>
                 <CartesianGrid strokeDasharray="3 3" vertical={false} stroke="#e2e8f0" />
                 <XAxis dataKey="name" stroke="#94a3b8" fontSize={10} tickFormatter={(val) => val.substring(0, 10) + '...'} />
