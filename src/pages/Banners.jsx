@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FiPlus, FiImage, FiTrash2, FiEdit2 } from 'react-icons/fi'
 import api from '../api'
+import ConfirmModal from '../components/ConfirmModal'
 
 export default function Banners() {
   const [banners, setBanners] = useState([]);
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, id: null });
 
   useEffect(() => {
     fetchBanners();
@@ -28,8 +30,14 @@ export default function Banners() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if(!window.confirm('Delete this banner?')) return;
+  const confirmDelete = (id) => {
+    setDeleteConfirm({ isOpen: true, id });
+  };
+
+  const handleDelete = async () => {
+    const id = deleteConfirm.id;
+    setDeleteConfirm({ isOpen: false, id: null });
+    if (!id) return;
     try {
       await api.delete(`/banners/${id}`);
       fetchBanners();
@@ -51,6 +59,14 @@ export default function Banners() {
           <FiPlus /> Add Banner
         </Link>
       </div>
+
+      <ConfirmModal 
+        isOpen={deleteConfirm.isOpen}
+        title="Delete Banner"
+        message="Are you sure you want to delete this banner? This action cannot be undone."
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteConfirm({ isOpen: false, id: null })}
+      />
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(320px, 1fr))', gap: '24px' }}>
         {banners.map(banner => (
@@ -95,7 +111,7 @@ export default function Banners() {
                 <Link to={`/banners/${banner.id}/edit`} className="btn btn-secondary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none', padding: '8px 16px', fontSize: '0.9rem' }}>
                   <FiEdit2 /> Edit
                 </Link>
-                <button className="btn btn-danger" onClick={() => handleDelete(banner.id)} style={{ padding: '8px 16px', fontSize: '0.9rem' }}>
+                <button className="btn btn-danger" onClick={() => confirmDelete(banner.id)} style={{ padding: '8px 16px', fontSize: '0.9rem' }}>
                   <FiTrash2 /> Remove
                 </button>
               </div>

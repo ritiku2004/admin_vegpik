@@ -2,9 +2,11 @@ import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import { FiPlus, FiEdit2, FiTrash2, FiTag } from 'react-icons/fi'
 import api from '../api'
+import ConfirmModal from '../components/ConfirmModal'
 
 export default function Categories() {
   const [categories, setCategories] = useState([]);
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, id: null });
 
   useEffect(() => {
     fetchCategories();
@@ -21,8 +23,14 @@ export default function Categories() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if(!window.confirm('Delete this category?')) return;
+  const confirmDelete = (id) => {
+    setDeleteConfirm({ isOpen: true, id });
+  };
+
+  const handleDelete = async () => {
+    const id = deleteConfirm.id;
+    setDeleteConfirm({ isOpen: false, id: null });
+    if (!id) return;
     try {
       await api.delete(`/categories/${id}`);
       fetchCategories();
@@ -44,6 +52,14 @@ export default function Categories() {
           <FiPlus /> Add Category
         </Link>
       </div>
+
+      <ConfirmModal 
+        isOpen={deleteConfirm.isOpen}
+        title="Delete Category"
+        message="Are you sure you want to delete this category? This action cannot be undone."
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteConfirm({ isOpen: false, id: null })}
+      />
 
       <div className="glass-panel" style={{ padding: '24px' }}>
         <div className="table-container">
@@ -89,9 +105,9 @@ export default function Categories() {
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     <Link to={`/categories/${cat.id}/edit`} className="icon-btn" style={{ color: 'var(--accent-primary)', marginRight: '12px', fontSize: '1.1rem', display: 'inline-flex', alignItems: 'center' }}>
-                      <FiEdit2 />
+                      <FiEdit2 size={18} />
                     </Link>
-                    <button className="icon-btn" onClick={() => handleDelete(cat.id)} style={{ color: 'var(--accent-danger)', fontSize: '1.1rem' }}>
+                    <button className="icon-btn" title="Delete" onClick={() => confirmDelete(cat.id)} style={{ color: 'var(--accent-danger)', fontSize: '1.1rem' }}>
                       <FiTrash2 />
                     </button>
                   </td>

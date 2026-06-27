@@ -2,11 +2,13 @@ import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FiUsers, FiSearch, FiPhone, FiMail, FiCalendar, FiTrash2, FiEye } from 'react-icons/fi';
 import api from '../api';
+import ConfirmModal from '../components/ConfirmModal';
 
 export default function Users() {
   const [users, setUsers] = useState([]);
   const [searchQuery, setSearchQuery] = useState('');
   const [loading, setLoading] = useState(true);
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, id: null });
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -27,8 +29,14 @@ export default function Users() {
     }
   };
 
-  const handleDeleteUser = async (id) => {
-    if (!window.confirm('Are you sure you want to delete this user?')) return;
+  const confirmDelete = (id) => {
+    setDeleteConfirm({ isOpen: true, id });
+  };
+
+  const handleDeleteUser = async () => {
+    const id = deleteConfirm.id;
+    setDeleteConfirm({ isOpen: false, id: null });
+    if (!id) return;
     try {
       const { data } = await api.delete(`/users/${id}`);
       if (data.success) {
@@ -57,6 +65,14 @@ export default function Users() {
           <p style={{ color: 'var(--text-secondary)' }}>Manage and view registered customers</p>
         </div>
       </div>
+
+      <ConfirmModal 
+        isOpen={deleteConfirm.isOpen}
+        title="Delete User"
+        message="Are you sure you want to delete this user? This action cannot be undone."
+        onConfirm={handleDeleteUser}
+        onCancel={() => setDeleteConfirm({ isOpen: false, id: null })}
+      />
 
       {/* Metrics Cards */}
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(240px, 1fr))', gap: '24px', marginBottom: '32px' }}>
@@ -167,7 +183,7 @@ export default function Users() {
                           <FiEye style={{ fontSize: '1.1rem' }} />
                         </button>
                         <button
-                          onClick={() => handleDeleteUser(user.id)}
+                          onClick={() => confirmDelete(user.id)}
                           className="btn-danger"
                           style={{ padding: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center', borderRadius: '8px', border: 'none', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', cursor: 'pointer', transition: 'all 0.2s' }}
                           title="Delete User"

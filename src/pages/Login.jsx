@@ -162,19 +162,15 @@ export default function Login() {
           </div>
 
           <div>
-            <label style={{ display: 'block', marginBottom: '8px', color: '#374151', fontSize: '0.8rem', fontWeight: 700, letterSpacing: '0.5px' }}>
-              PASSWORD
+            <label style={{ display: 'block', marginBottom: '8px', color: 'var(--text-muted)', fontSize: '0.75rem', fontWeight: 700, letterSpacing: '0.06em', textTransform: 'uppercase' }}>
+              Password
             </label>
             <div className="input-wrapper" style={{
-              position: 'relative',
-              display: 'flex',
-              alignItems: 'center',
-              backgroundColor: '#f9fafb',
-              border: '1.5px solid #e5e7eb',
-              borderRadius: '14px',
-              transition: 'all 0.25s cubic-bezier(0.4, 0, 0.2, 1)'
+              position: 'relative', display: 'flex', alignItems: 'center',
+              backgroundColor: 'var(--bg-input)', border: '1px solid var(--glass-border)',
+              borderRadius: '12px', transition: 'all 0.25s ease',
             }}>
-              <FiLock style={{ position: 'absolute', left: '16px', color: '#9ca3af', fontSize: '1.2rem' }} />
+              <FiLock style={{ position: 'absolute', left: '14px', color: 'var(--text-muted)', fontSize: '1.1rem' }} />
               <input
                 type={showPassword ? 'text' : 'password'}
                 required
@@ -182,12 +178,12 @@ export default function Login() {
                 onChange={(e) => setPassword(e.target.value)}
                 style={{ 
                   width: '100%', 
-                  padding: '15px 44px 15px 48px',
+                  padding: '13px 44px 13px 42px',
                   backgroundColor: 'transparent',
                   border: 'none',
                   outline: 'none',
-                  fontSize: '0.95rem',
-                  color: '#111827',
+                  fontSize: '0.9rem',
+                  color: 'var(--text-primary)',
                   fontWeight: 500
                 }}
                 placeholder="Enter password"
@@ -201,14 +197,17 @@ export default function Login() {
                   display: 'flex',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  color: '#9ca3af',
-                  fontSize: '1.2rem',
+                  color: 'var(--text-muted)',
+                  fontSize: '1.1rem',
                   padding: '4px',
                   cursor: 'pointer',
-                  transition: 'color 0.2s'
+                  transition: 'color 0.2s',
+                  background: 'none',
+                  border: 'none',
+                  outline: 'none'
                 }}
-                onMouseOver={(e) => e.currentTarget.style.color = '#4b5563'}
-                onMouseOut={(e) => e.currentTarget.style.color = '#9ca3af'}
+                onMouseOver={(e) => e.currentTarget.style.color = 'var(--text-primary)'}
+                onMouseOut={(e) => e.currentTarget.style.color = 'var(--text-muted)'}
               >
                 {showPassword ? <FiEyeOff /> : <FiEye />}
               </button>

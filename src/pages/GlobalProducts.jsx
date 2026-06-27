@@ -3,12 +3,14 @@ import { Link } from 'react-router-dom'
 import { FiPlus, FiSearch, FiEdit2, FiTrash2, FiImage } from 'react-icons/fi'
 import api from '../api'
 import CustomSelect from '../components/CustomSelect'
+import ConfirmModal from '../components/ConfirmModal'
 
 export default function GlobalProducts() {
   const [products, setProducts] = useState([]);
   const [categories, setCategories] = useState([]);
   const [search, setSearch] = useState('');
   const [selectedCategory, setSelectedCategory] = useState('');
+  const [deleteConfirm, setDeleteConfirm] = useState({ isOpen: false, id: null });
 
   useEffect(() => {
     fetchProducts();
@@ -33,8 +35,14 @@ export default function GlobalProducts() {
     }
   };
 
-  const handleDelete = async (id) => {
-    if(!window.confirm('Delete this global product?')) return;
+  const confirmDelete = (id) => {
+    setDeleteConfirm({ isOpen: true, id });
+  };
+
+  const handleDelete = async () => {
+    const id = deleteConfirm.id;
+    setDeleteConfirm({ isOpen: false, id: null });
+    if (!id) return;
     try {
       await api.delete(`/products/${id}`);
       fetchProducts();
@@ -58,12 +66,20 @@ export default function GlobalProducts() {
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: '32px', flexWrap: 'wrap', gap: '16px' }}>
         <div>
           <h1 style={{ fontSize: '2rem', fontWeight: 600, marginBottom: '8px' }}>Products</h1>
-          <p style={{ color: 'var(--text-secondary)' }}>Master catalog of all available products</p>
+          <p style={{ color: 'var(--text-secondary)' }}>Manage global product master list</p>
         </div>
         <Link to="/global-products/new" className="btn btn-primary" style={{ display: 'inline-flex', alignItems: 'center', gap: '8px', textDecoration: 'none' }}>
           <FiPlus /> Add Product
         </Link>
       </div>
+
+      <ConfirmModal 
+        isOpen={deleteConfirm.isOpen}
+        title="Delete Product"
+        message="Are you sure you want to delete this global product? This action cannot be undone."
+        onConfirm={handleDelete}
+        onCancel={() => setDeleteConfirm({ isOpen: false, id: null })}
+      />
 
       <div className="glass-panel" style={{ padding: '24px' }}>
         <div style={{ display: 'flex', gap: '16px', marginBottom: '24px', flexWrap: 'wrap' }}>
@@ -146,9 +162,9 @@ export default function GlobalProducts() {
                   </td>
                   <td style={{ textAlign: 'right' }}>
                     <Link to={`/global-products/${product.id}/edit`} className="icon-btn" style={{ color: 'var(--accent-primary)', marginRight: '12px', fontSize: '1.1rem', display: 'inline-flex', alignItems: 'center' }}>
-                      <FiEdit2 />
+                      <FiEdit2 size={18} />
                     </Link>
-                    <button className="icon-btn" onClick={() => handleDelete(product.id)} style={{ color: 'var(--accent-danger)', fontSize: '1.1rem' }}>
+                    <button className="icon-btn" title="Delete" onClick={() => confirmDelete(product.id)} style={{ color: 'var(--accent-danger)', fontSize: '1.1rem' }}>
                       <FiTrash2 />
                     </button>
                   </td>

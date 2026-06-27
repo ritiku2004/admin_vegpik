@@ -74,22 +74,35 @@ export default function OrderDetail() {
     }
   };
   const handleDownloadReceipt = async () => {
-    if (!order) return;
-    setDownloadingReceipt(true);
     try {
-      const response = await api.get(`/receipts/${order.id}`, { responseType: 'blob' });
-      const url = window.URL.createObjectURL(new Blob([response.data], { type: 'application/pdf' }));
-      const link = document.createElement('a');
-      link.href = url;
-      link.setAttribute('download', `receipt_${order.order_number}.pdf`);
-      document.body.appendChild(link);
-      link.click();
-      link.remove();
-      window.URL.revokeObjectURL(url);
-      showToast('Receipt downloaded successfully');
+      setDownloadingReceipt(true);
+      
+      const response = await api.get(`/receipts/${order.id}`);
+      const { html } = response.data;
+      
+      if (!html) {
+        throw new Error('No HTML content received');
+      }
+
+      // Open a new window for printing
+      const printWindow = window.open('', '_blank', 'width=800,height=600');
+      if (printWindow) {
+        printWindow.document.open();
+        printWindow.document.write(html);
+        printWindow.document.close();
+        
+        // Wait for styles/images to load then print
+        printWindow.onload = () => {
+          printWindow.focus();
+          printWindow.print();
+        };
+      } else {
+        alert('Please allow popups for this site to print receipts.');
+      }
+      
     } catch (err) {
-      console.error(err);
-      alert(err.response?.data?.error || 'Failed to download receipt. It might not be generated yet.');
+      console.error('Download receipt error:', err);
+      alert(err.response?.data?.error || 'Failed to get receipt. It might not be generated yet.');
     } finally {
       setDownloadingReceipt(false);
     }
@@ -517,52 +530,6 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
 
       </div>
 
-      {/* Order Activity Log */}
-      <div className="glass-panel" style={{ padding: '24px', marginTop: '24px' }}>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px' }}>
-          <FiClock style={{ fontSize: '1.2rem', color: 'var(--accent-primary)' }} />
-          <h2 style={{ fontSize: '1.2rem', fontWeight: 600, margin: 0 }}>Order Activity Log</h2>
-        </div>
-        <div className="table-container" style={{ overflowX: 'auto' }}>
-          <table style={{ width: '100%', borderCollapse: 'collapse', textAlign: 'left' }}>
-            <thead>
-              <tr style={{ borderBottom: '2px solid #f1f5f9' }}>
-                <th style={{ padding: '12px 8px' }}>Log ID</th>
-                <th style={{ padding: '12px 8px' }}>Event</th>
-                <th style={{ padding: '12px 8px' }}>Timestamp</th>
-              </tr>
-            </thead>
-            <tbody>
-              {order.payment_logs && order.payment_logs.map(log => (
-                <tr key={log.id} style={{ borderBottom: '1px solid #f1f5f9' }}>
-                  <td style={{ padding: '12px 8px', fontWeight: 500 }}>#{log.id}</td>
-                  <td style={{ padding: '12px 8px' }}>
-                    <span style={{
-                      display: 'inline-block',
-                      padding: '4px 10px',
-                      borderRadius: '20px',
-                      fontSize: '0.8rem',
-                      fontWeight: 600,
-                      backgroundColor: log.event_type.includes('success') || log.event_type.includes('confirm') ? 'rgba(16, 185, 129, 0.1)' : log.event_type.includes('fail') ? 'rgba(239, 68, 68, 0.1)' : 'rgba(245, 158, 11, 0.1)',
-                      color: log.event_type.includes('success') || log.event_type.includes('confirm') ? '#10b981' : log.event_type.includes('fail') ? '#ef4444' : '#f59e0b'
-                    }}>
-                      {log.event_type.replace(/_/g, ' ')}
-                    </span>
-                  </td>
-                  <td style={{ padding: '12px 8px', color: 'var(--text-secondary)' }}>{new Date(log.created_at).toLocaleString()}</td>
-                </tr>
-              ))}
-              {(!order.payment_logs || order.payment_logs.length === 0) && (
-                <tr>
-                  <td colSpan="3" style={{ textAlign: 'center', padding: '24px', color: 'var(--text-secondary)' }}>
-                    No activity logs recorded for this order.
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
-        </div>
-      </div>
 
     </div>
   );
