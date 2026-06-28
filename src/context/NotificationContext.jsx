@@ -119,9 +119,20 @@ export const NotificationProvider = ({ children }) => {
     const type = payload.data?.type || 'new_order';
 
     // Prevent duplicate processing of identical notifications (foreground de-duplication)
-    if (type === 'new_order' && orderId) {
+    const msgId = payload.messageId || payload.fcmMessageId || payload.fcmOptions?.messageId;
+    if (msgId) {
+      if (seenOrderIdsRef.current.has(msgId)) {
+        console.log(`De-duplicated foreground notification with msg ID: ${msgId}`);
+        return;
+      }
+      seenOrderIdsRef.current.add(msgId);
+      if (seenOrderIdsRef.current.size > 50) {
+        const firstVal = seenOrderIdsRef.current.values().next().value;
+        seenOrderIdsRef.current.delete(firstVal);
+      }
+    } else if (type === 'new_order' && orderId) {
+      // Fallback deduplication for local simulation or if messageId is missing
       if (seenOrderIdsRef.current.has(orderId)) {
-        console.log(`De-duplicated foreground notification for order ID: ${orderId}`);
         return;
       }
       seenOrderIdsRef.current.add(orderId);

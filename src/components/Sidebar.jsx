@@ -8,14 +8,14 @@ import { useNotification } from '../context/NotificationContext'
 import logo from '../assets/logo.png'
 
 const globalLinks = [
-  { name: 'Dashboard',       path: '/dashboard',       icon: <FiHome /> },
-  { name: 'Orders',          path: '/orders',          icon: <FiShoppingBag /> },
-  { name: 'Products',        path: '/global-products', icon: <FiLayers /> },
-  { name: 'Categories',      path: '/categories',      icon: <FiList /> },
-  { name: 'Banners',         path: '/banners',         icon: <FiImage /> },
-  { name: 'Users',           path: '/users',           icon: <FiUsers /> },
-  { name: 'Shop Settings',   path: '/manage-shops',    icon: <FiMapPin /> },
-  { name: 'Manage Charges',  path: '/manage-charges',  icon: <FiDollarSign /> },
+  { name: 'Dashboard', path: '/dashboard', icon: <FiHome /> },
+  { name: 'Orders', path: '/orders', icon: <FiShoppingBag /> },
+  { name: 'Products', path: '/global-products', icon: <FiLayers /> },
+  { name: 'Categories', path: '/categories', icon: <FiList /> },
+  { name: 'Banners', path: '/banners', icon: <FiImage /> },
+  { name: 'Users', path: '/users', icon: <FiUsers /> },
+  { name: 'Shop Settings', path: '/manage-shops', icon: <FiMapPin /> },
+  { name: 'Manage Charges', path: '/manage-charges', icon: <FiDollarSign /> },
 ];
 
 export default function Sidebar({ isOpen, setIsOpen }) {
@@ -57,15 +57,15 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         flexShrink: 0
       }}>
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
-          <img 
-            src={logo} 
-            alt="Vegpik Logo" 
+          <img
+            src={logo}
+            alt="Vegpik Logo"
             style={{
               height: '52px',
               maxWidth: '180px',
               objectFit: 'contain',
               flexShrink: 0
-            }} 
+            }}
           />
         </div>
 
@@ -73,7 +73,7 @@ export default function Sidebar({ isOpen, setIsOpen }) {
         <button
           className="mobile-close-btn"
           onClick={() => setIsOpen(false)}
-          style={{ 
+          style={{
             color: 'var(--text-secondary)',
             position: 'absolute',
             right: '16px',
