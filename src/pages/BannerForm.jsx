@@ -297,49 +297,7 @@ export default function BannerForm() {
             )}
           </div>
 
-          {/* Background Color */}
-          <div className="input-group">
-            <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block' }}>Background Color</label>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-              <input 
-                type="color" 
-                name="background_color" 
-                value={formData.background_color} 
-                onChange={handleInputChange} 
-                style={{ width: '60px', height: '40px', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', padding: 0 }} 
-              />
-              <input 
-                type="text" 
-                name="background_color" 
-                value={formData.background_color} 
-                onChange={handleInputChange} 
-                className="input-field" 
-                style={{ flex: 1 }}
-              />
-            </div>
-          </div>
 
-          {/* Text Color */}
-          <div className="input-group">
-            <label style={{ fontWeight: 600, marginBottom: '8px', display: 'block' }}>Text Color</label>
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
-              <input 
-                type="color" 
-                name="text_color" 
-                value={formData.text_color} 
-                onChange={handleInputChange} 
-                style={{ width: '60px', height: '40px', border: '1px solid #cbd5e1', borderRadius: '8px', cursor: 'pointer', padding: 0 }} 
-              />
-              <input 
-                type="text" 
-                name="text_color" 
-                value={formData.text_color} 
-                onChange={handleInputChange} 
-                className="input-field" 
-                style={{ flex: 1 }}
-              />
-            </div>
-          </div>
 
           {/* Description — full width */}
           <div className="input-group" style={{ gridColumn: '1 / -1' }}>
