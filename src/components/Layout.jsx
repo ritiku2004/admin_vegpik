@@ -45,16 +45,7 @@ export default function Layout({ shops }) {
           ? order.items.map(item => `- ${item.product_name || item.name} (Price: AED ${parseFloat(item.price).toFixed(2)}, Qty: ${item.quantity})`).join('\n')
           : 'No items';
 
-        let paymentStatusStr = 'Pending';
-        if (order.payment_method === 'COD') {
-          paymentStatusStr = 'Cash on Delivery';
-        } else if (order.payment_status === 'Paid') {
-          paymentStatusStr = 'Payment Done';
-        } else if (order.payment_status === 'Failed') {
-          paymentStatusStr = 'Payment Failed';
-        } else {
-          paymentStatusStr = order.payment_status || 'Pending';
-        }
+        const paymentStatusStr = order.payment_status === 'Paid' ? 'Payment Done' : 'Cash on Delivery';
 
         const copiedText = `Receiver Name: ${receiverName}
 Mobile Number: ${receiverMobile}

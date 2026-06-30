@@ -134,16 +134,7 @@ export default function OrderDetail() {
       ? order.items.map(item => `- ${item.product_name || item.name} (Price: AED ${parseFloat(item.price).toFixed(2)}, Qty: ${item.quantity})`).join('\n')
       : 'No items';
 
-    let paymentStatusStr = 'Pending';
-    if (order.payment_method === 'COD') {
-      paymentStatusStr = 'Cash on Delivery';
-    } else if (order.payment_status === 'Paid') {
-      paymentStatusStr = 'Payment Done';
-    } else if (order.payment_status === 'Failed') {
-      paymentStatusStr = 'Payment Failed';
-    } else {
-      paymentStatusStr = order.payment_status || 'Pending';
-    }
+    const paymentStatusStr = order.payment_status === 'Paid' ? 'Payment Done' : 'Cash on Delivery';
 
     const copiedText = `Receiver Name: ${receiverName}
 Mobile Number: ${receiverMobile}
@@ -175,7 +166,6 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
 
   const getStatusColor = (status) => {
     switch(status) {
-      case 'Pending Payment': return '#f59e0b';
       case 'Placed': return '#f59e0b'; // Amber for Placed (Waiting for Confirmation)
       case 'Processing': return 'var(--accent-warning)';
       case 'Shipped': return '#8b5cf6';
@@ -290,7 +280,6 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
                   onChange={(e) => setNewStatus(e.target.value)}
                   style={{ width: '100%', padding: '12px 16px' }}
                 >
-                  <option value="Pending Payment">Pending Payment</option>
                   <option value="Placed">Placed</option>
                   <option value="Processing">Processing</option>
                   <option value="Shipped">Shipped</option>
