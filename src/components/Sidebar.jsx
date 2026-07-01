@@ -1,8 +1,8 @@
-import { useEffect } from 'react'
+import { useState, useEffect } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import {
   FiHome, FiList, FiImage, FiLayers, FiShoppingBag,
-  FiMapPin, FiX, FiLogOut, FiUsers, FiDollarSign, FiMessageSquare
+  FiMapPin, FiX, FiLogOut, FiUsers, FiDollarSign, FiMessageSquare, FiCreditCard, FiChevronDown, FiChevronUp
 } from 'react-icons/fi'
 import { useNotification } from '../context/NotificationContext'
 import logo from '../assets/logo.png'
@@ -16,13 +16,27 @@ const globalLinks = [
   { name: 'Users', path: '/users', icon: <FiUsers /> },
   { name: 'Shop Settings', path: '/manage-shops', icon: <FiMapPin /> },
   { name: 'Manage Charges', path: '/manage-charges', icon: <FiDollarSign /> },
-  { name: 'Customer Support', path: '/customer-support', icon: <FiMessageSquare /> },
+  { name: 'Support Queries', path: '/support-queries', icon: <FiMessageSquare /> },
+  { 
+    name: 'Web Setting', 
+    icon: <FiCreditCard />, 
+    subLinks: [
+      { name: 'Payment Settings', path: '/payment-settings' },
+      { name: 'Social Links', path: '/social-links' },
+      { name: 'Contact Cards', path: '/contact-cards' },
+    ] 
+  }
 ];
 
 export default function Sidebar({ isOpen, setIsOpen }) {
   const location = useLocation();
   const navigate = useNavigate();
   const { shopBadgeCounts } = useNotification();
+  const [isWebSettingOpen, setIsWebSettingOpen] = useState(
+    location.pathname.includes('/payment-settings') || 
+    location.pathname.includes('/social-links') || 
+    location.pathname.includes('/contact-cards')
+  );
 
   const handleLogout = () => {
     localStorage.removeItem('admin_token');
@@ -110,16 +124,50 @@ export default function Sidebar({ isOpen, setIsOpen }) {
           Main Menu
         </p>
 
-        {globalLinks.map(link => (
-          <NavLink
-            key={link.path}
-            to={link.path}
-            className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
-          >
-            <span style={{ fontSize: '1.05rem', flexShrink: 0 }}>{link.icon}</span>
-            <span>{link.name}</span>
-          </NavLink>
-        ))}
+        {globalLinks.map(link => {
+          if (link.subLinks) {
+            return (
+              <div key={link.name} style={{ display: 'flex', flexDirection: 'column' }}>
+                <div 
+                  className={`nav-link ${location.pathname.includes('/payment-settings') || location.pathname.includes('/social-links') || location.pathname.includes('/contact-cards') ? 'active' : ''}`}
+                  onClick={() => setIsWebSettingOpen(!isWebSettingOpen)}
+                  style={{ cursor: 'pointer', justifyContent: 'space-between' }}
+                >
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    <span style={{ fontSize: '1.05rem', flexShrink: 0 }}>{link.icon}</span>
+                    <span>{link.name}</span>
+                  </div>
+                  {isWebSettingOpen ? <FiChevronUp size={16} /> : <FiChevronDown size={16} />}
+                </div>
+                {isWebSettingOpen && (
+                  <div style={{ display: 'flex', flexDirection: 'column', paddingLeft: '32px', marginTop: '4px', gap: '4px' }}>
+                    {link.subLinks.map(sub => (
+                      <NavLink
+                        key={sub.path}
+                        to={sub.path}
+                        className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+                        style={{ padding: '8px 12px', fontSize: '0.9rem' }}
+                      >
+                        <span>{sub.name}</span>
+                      </NavLink>
+                    ))}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          return (
+            <NavLink
+              key={link.path}
+              to={link.path}
+              className={({ isActive }) => `nav-link ${isActive ? 'active' : ''}`}
+            >
+              <span style={{ fontSize: '1.05rem', flexShrink: 0 }}>{link.icon}</span>
+              <span>{link.name}</span>
+            </NavLink>
+          );
+        })}
       </nav>
 
       {/* Logout */}

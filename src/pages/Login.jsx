@@ -117,10 +117,10 @@ export default function Login() {
       }}>
         {/* Brand Header */}
         <div style={{ marginBottom: '40px', textAlign: 'center' }}>
-          <img src={VegpikLogo} alt="Vegpik Logo" style={{ width: '64px', height: '64px', borderRadius: '18px', marginBottom: '16px', boxShadow: '0 8px 20px rgba(16, 185, 129, 0.25)' }} />
-          <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.5px', marginBottom: '6px' }}>
+          <img src={VegpikLogo} alt="Vegpik Logo" style={{ height: '70px', width: 'auto', objectFit: 'contain', marginBottom: '16px', filter: 'drop-shadow(0 4px 12px rgba(16, 185, 129, 0.15))' }} />
+          {/* <h2 style={{ fontSize: '1.75rem', fontWeight: 800, color: 'var(--text-primary)', letterSpacing: '-0.5px', marginBottom: '6px' }}>
             Vegpik
-          </h2>
+          </h2> */}
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>Admin Control Center</p>
         </div>
 

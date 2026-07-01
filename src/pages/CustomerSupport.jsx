@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import api from '../api'
 
-export default function CustomerSupport() {
-  const [activeTab, setActiveTab] = useState('queries')
+export default function CustomerSupport({ activeTabProp = 'queries' }) {
+  const [activeTab, setActiveTab] = useState(activeTabProp)
   const [queries, setQueries] = useState([])
   const [socialLinks, setSocialLinks] = useState([])
   const [contactInfo, setContactInfo] = useState([])
@@ -34,6 +34,10 @@ export default function CustomerSupport() {
       setLoading(false)
     }
   }
+
+  useEffect(() => {
+    setActiveTab(activeTabProp);
+  }, [activeTabProp]);
 
   useEffect(() => {
     fetchData()
@@ -109,46 +113,13 @@ export default function CustomerSupport() {
     <div className="page-container" style={{ padding: '24px' }}>
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' }}>
         <div>
-          <h2 style={{ fontSize: '1.5rem', fontWeight: 700, color: 'var(--text-primary)' }}>Customer Support</h2>
-          <p style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>Manage contact details, social links and view customer queries</p>
+          <h2 style={{ margin: 0, fontSize: '1.8rem', color: 'var(--text-primary)', fontWeight: 700 }}>
+            {activeTab === 'queries' ? 'Support Queries' : activeTab === 'socials' ? 'Social Links' : 'Contact Cards'}
+          </h2>
+          <p style={{ margin: '4px 0 0 0', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+            {activeTab === 'queries' ? 'View and manage customer support queries.' : activeTab === 'socials' ? 'Manage your social media links.' : 'Manage your contact details and cards.'}
+          </p>
         </div>
-      </div>
-
-      {/* Tabs */}
-      <div style={{ display: 'flex', gap: '8px', borderBottom: '1px solid var(--glass-border)', marginBottom: '24px', paddingBottom: '2px' }}>
-        <button
-          onClick={() => setActiveTab('queries')}
-          style={{
-            padding: '10px 16px', borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer',
-            background: activeTab === 'queries' ? 'var(--accent-primary)' : 'transparent',
-            color: activeTab === 'queries' ? '#fff' : 'var(--text-secondary)',
-            fontWeight: 600, fontSize: '0.9rem', transition: 'var(--transition-fast)'
-          }}
-        >
-          Queries
-        </button>
-        <button
-          onClick={() => setActiveTab('socials')}
-          style={{
-            padding: '10px 16px', borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer',
-            background: activeTab === 'socials' ? 'var(--accent-primary)' : 'transparent',
-            color: activeTab === 'socials' ? '#fff' : 'var(--text-secondary)',
-            fontWeight: 600, fontSize: '0.9rem', transition: 'var(--transition-fast)'
-          }}
-        >
-          Social Links
-        </button>
-        <button
-          onClick={() => setActiveTab('contact')}
-          style={{
-            padding: '10px 16px', borderRadius: '8px 8px 0 0', border: 'none', cursor: 'pointer',
-            background: activeTab === 'contact' ? 'var(--accent-primary)' : 'transparent',
-            color: activeTab === 'contact' ? '#fff' : 'var(--text-secondary)',
-            fontWeight: 600, fontSize: '0.9rem', transition: 'var(--transition-fast)'
-          }}
-        >
-          Contact Cards
-        </button>
       </div>
 
       {message && <div style={{ color: 'var(--accent-danger)', marginBottom: '16px' }}>{message}</div>}
@@ -245,12 +216,12 @@ export default function CustomerSupport() {
                         <h4 style={{ fontWeight: 700, fontSize: '1.1rem', color: 'var(--text-primary)' }}>{s.name}</h4>
                         {s.icon && (s.icon.includes('/') || s.icon.includes('.')) ? (
                           <img 
-                            src={s.icon.startsWith('http') ? s.icon : `http://localhost:3000/${s.icon.replace(/^\//, '')}`} 
+                            src={s.icon.startsWith('http') ? s.icon : `${(import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000/api/v1').replace('/api/v1', '')}/${s.icon.replace(/^\//, '')}`} 
                             alt={s.name} 
                             style={{ width: '28px', height: '28px', objectFit: 'contain', borderRadius: '4px' }} 
                             onError={(e) => {
                               if (e.target.src.includes('media.vegpik.com')) {
-                                e.target.src = e.target.src.replace(/https?:\/\/media\.vegpik\.com/gi, 'http://localhost:3000/uploads');
+                                e.target.src = e.target.src.replace(/https?:\/\/media\.vegpik\.com/gi, `${(import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000/api/v1').replace('/api/v1', '')}/uploads`);
                               } else {
                                 e.target.outerHTML = `<span style="font-size:0.75rem">${s.icon}</span>`;
                               }
@@ -348,13 +319,13 @@ export default function CustomerSupport() {
                 {editingSocial.icon && (
                   <div style={{ marginBottom: '10px', display: 'flex', alignItems: 'center', gap: '12px' }}>
                     <img 
-                      src={editingSocial.icon.startsWith('http') ? editingSocial.icon : `http://localhost:3000/${editingSocial.icon.replace(/^\//, '')}`} 
+                      src={editingSocial.icon.startsWith('http') ? editingSocial.icon : `${(import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000/api/v1').replace('/api/v1', '')}/${editingSocial.icon.replace(/^\//, '')}`} 
                       alt="Preview" 
                       style={{ width: '40px', height: '40px', objectFit: 'contain', borderRadius: '8px', border: '1px solid var(--glass-border)', padding: '4px', background: 'rgba(255,255,255,0.05)' }} 
                       onError={(e) => {
                         // If it fails, fallback to local host port if it was media.vegpik.com locally, or vice versa
                         if (e.target.src.includes('media.vegpik.com')) {
-                          e.target.src = e.target.src.replace(/https?:\/\/media\.vegpik\.com/gi, 'http://localhost:3000/uploads');
+                          e.target.src = e.target.src.replace(/https?:\/\/media\.vegpik\.com/gi, `${(import.meta.env.VITE_BACKEND_URL || 'http://localhost:3000/api/v1').replace('/api/v1', '')}/uploads`);
                         } else {
                           e.target.src = 'https://placehold.co/40x40?text=Icon';
                         }

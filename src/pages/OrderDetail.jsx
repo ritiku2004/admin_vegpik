@@ -306,13 +306,60 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
             </div>
             
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px', fontSize: '0.95rem' }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                 <div>
                   <span style={{ color: 'var(--text-secondary)', display: 'block', fontSize: '0.8rem', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Payment Method</span>
                   <span style={{ fontWeight: 600, color: 'var(--text-primary)', fontSize: '1rem' }}>
-                    Cash on Delivery (COD)
+                    {order.payment_method === 'COD' ? 'Cash on Delivery (COD)' : order.payment_method || 'N/A'}
                   </span>
                 </div>
+                {order.payment_method === 'PayPal' && (
+                  <div style={{ padding: '12px', backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
+                    <div style={{ marginBottom: '8px' }}>
+                      <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>Transaction ID: </span>
+                      <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{order.transaction_id || 'N/A'}</span>
+                    </div>
+                    {order.payment_screenshot_url && order.payment_screenshot_url !== 'null' && (
+                      <div>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600, display: 'block', marginBottom: '8px' }}>Payment Screenshot:</span>
+                        <a href={order.payment_screenshot_url} target="_blank" rel="noopener noreferrer">
+                          <img 
+                            src={order.payment_screenshot_url} 
+                            alt="Payment Screenshot" 
+                            style={{ maxWidth: '120px', borderRadius: '4px', border: '1px solid #ccc', display: 'block' }}
+                            onError={(e) => {
+                              // Image failed to load (e.g. local dev URL mismatch) — show a link instead
+                              e.target.style.display = 'none';
+                              const link = document.createElement('a');
+                              link.href = order.payment_screenshot_url;
+                              link.target = '_blank';
+                              link.rel = 'noopener noreferrer';
+                              link.textContent = '🖼 View Screenshot';
+                              link.style.cssText = 'color: #22c55e; font-size: 0.85rem; font-weight: 600; text-decoration: underline; cursor: pointer;';
+                              e.target.parentElement.appendChild(link);
+                            }} 
+                          />
+                        </a>
+                      </div>
+                    )}
+                  </div>
+                )}
+                {order.payment_method === 'Bank Transfer' && (
+                  <div style={{ padding: '12px', backgroundColor: 'rgba(255, 255, 255, 0.05)', borderRadius: '8px', border: '1px solid var(--glass-border)' }}>
+                    <div style={{ marginBottom: '4px' }}>
+                      <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>Bank Name: </span>
+                      <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{order.user_bank_name || 'N/A'}</span>
+                    </div>
+                    <div style={{ marginBottom: '4px' }}>
+                      <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>Account: </span>
+                      <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{order.user_bank_account || 'N/A'}</span>
+                    </div>
+                    <div>
+                      <span style={{ color: 'var(--text-secondary)', fontSize: '0.8rem', fontWeight: 600 }}>IBAN: </span>
+                      <span style={{ fontWeight: 500, color: 'var(--text-primary)' }}>{order.user_bank_iban || 'N/A'}</span>
+                    </div>
+                  </div>
+                )}
               </div>
               
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f1f5f9', paddingTop: '12px', flexWrap: 'wrap', gap: '12px' }}>

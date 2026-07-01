@@ -12,6 +12,7 @@ import Users from './pages/Users'
 import UserDetail from './pages/UserDetail'
 import OrderDetail from './pages/OrderDetail'
 import ManageCharges from './pages/ManageCharges'
+import PaymentSettings from './pages/PaymentSettings'
 import CategoryForm from './pages/CategoryForm'
 import ProductForm from './pages/ProductForm'
 import BannerForm from './pages/BannerForm'
@@ -72,7 +73,10 @@ function App() {
           <Route path="orders" element={<Orders shops={shops} />} />
           <Route path="orders/:orderId" element={<OrderDetail />} />
           <Route path="manage-charges" element={<ManageCharges />} />
-          <Route path="customer-support" element={<CustomerSupport />} />
+          <Route path="payment-settings" element={<PaymentSettings />} />
+          <Route path="support-queries" element={<CustomerSupport activeTabProp="queries" />} />
+          <Route path="social-links" element={<CustomerSupport activeTabProp="socials" />} />
+          <Route path="contact-cards" element={<CustomerSupport activeTabProp="contact" />} />
         </Route>
       </Routes>
     </NotificationProvider>

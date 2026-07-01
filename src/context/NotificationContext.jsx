@@ -213,25 +213,24 @@ export const NotificationProvider = ({ children }) => {
 
     // Prevent duplicate processing of identical notifications (foreground de-duplication)
     const msgId = payload.messageId || payload.fcmMessageId || payload.fcmOptions?.messageId;
-    if (msgId) {
-      if (seenOrderIdsRef.current.has(msgId)) {
-        console.log(`De-duplicated foreground notification with msg ID: ${msgId}`);
-        return;
-      }
-      seenOrderIdsRef.current.add(msgId);
-      if (seenOrderIdsRef.current.size > 50) {
-        const firstVal = seenOrderIdsRef.current.values().next().value;
-        seenOrderIdsRef.current.delete(firstVal);
-      }
-    } else if (type === 'new_order' && orderId) {
-      // Fallback deduplication for local simulation or if messageId is missing
-      if (seenOrderIdsRef.current.has(orderId)) {
-        return;
-      }
-      seenOrderIdsRef.current.add(orderId);
-      if (seenOrderIdsRef.current.size > 50) {
-        const firstVal = seenOrderIdsRef.current.values().next().value;
-        seenOrderIdsRef.current.delete(firstVal);
+    
+    if (msgId && seenOrderIdsRef.current.has(msgId)) {
+      console.log(`De-duplicated foreground notification with msg ID: ${msgId}`);
+      return;
+    }
+    if (orderId && seenOrderIdsRef.current.has(String(orderId))) {
+      console.log(`De-duplicated foreground notification with order ID: ${orderId}`);
+      return;
+    }
+
+    if (msgId) seenOrderIdsRef.current.add(msgId);
+    if (orderId) seenOrderIdsRef.current.add(String(orderId));
+
+    if (seenOrderIdsRef.current.size > 50) {
+      // Clear out older entries if the set grows too large
+      const iterator = seenOrderIdsRef.current.values();
+      for (let i = 0; i < 20; i++) {
+        seenOrderIdsRef.current.delete(iterator.next().value);
       }
     }
 
