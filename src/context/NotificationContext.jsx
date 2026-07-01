@@ -42,41 +42,133 @@ export const NotificationProvider = ({ children }) => {
     }
   };
 
+  const audioRef = useRef(null);
+
+  useEffect(() => {
+    // Preload audio and bind user interaction to unlock autoplay blocks
+    const audio = new Audio('/New order recieved.mp3');
+    audio.load();
+    audioRef.current = audio;
+
+    const unlockAudio = () => {
+      audio.play()
+        .then(() => {
+          audio.pause();
+          audio.currentTime = 0;
+          console.log('[NotificationContext] Audio autoplay unlocked successfully!');
+          window.removeEventListener('click', unlockAudio);
+          window.removeEventListener('keydown', unlockAudio);
+          window.removeEventListener('touchstart', unlockAudio);
+        })
+        .catch(err => {
+          console.warn('[NotificationContext] Failed to unlock audio:', err);
+        });
+    };
+
+    window.addEventListener('click', unlockAudio);
+    window.addEventListener('keydown', unlockAudio);
+    window.addEventListener('touchstart', unlockAudio);
+
+    return () => {
+      window.removeEventListener('click', unlockAudio);
+      window.removeEventListener('keydown', unlockAudio);
+      window.removeEventListener('touchstart', unlockAudio);
+    };
+  }, []);
+
   const playNotificationSound = () => {
     try {
-      const AudioContext = window.AudioContext || window.webkitAudioContext;
-      if (!AudioContext) return;
-      const ctx = new AudioContext();
-      
-      const playTone = (freq, startTime, duration) => {
-        const osc = ctx.createOscillator();
-        const gain = ctx.createGain();
-        
-        osc.type = 'sine';
-        osc.frequency.value = freq;
-        
-        gain.gain.setValueAtTime(0, startTime);
-        gain.gain.linearRampToValueAtTime(0.15, startTime + 0.05);
-        gain.gain.exponentialRampToValueAtTime(0.0001, startTime + duration);
-        
-        osc.connect(gain);
-        gain.connect(ctx.destination);
-        
-        osc.start(startTime);
-        osc.stop(startTime + duration);
-      };
-      
-      const now = ctx.currentTime;
-      playTone(523.25, now, 0.15);      // C5
-      playTone(783.99, now + 0.12, 0.3); // G5
+      if (audioRef.current) {
+        audioRef.current.currentTime = 0;
+        audioRef.current.play().catch(e => {
+          console.warn('Preloaded audio playback blocked:', e);
+          const fallbackAudio = new Audio('/New order recieved.mp3');
+          fallbackAudio.play().catch(err => console.warn('Fallback audio playback blocked:', err));
+        });
+      } else {
+        const audio = new Audio('/New order recieved.mp3');
+        audio.play().catch(e => console.warn('Direct audio playback blocked:', e));
+      }
     } catch (e) {
-      console.warn('Web Audio playback failed or blocked:', e);
+      console.warn('Audio playback failed or blocked:', e);
     }
   };
 
   useEffect(() => {
     // Request permission and register token
     requestForToken();
+
+    // Populate seen orders on startup
+    const initSeenOrders = async () => {
+      try {
+        const token = localStorage.getItem('admin_token');
+        if (!token) return;
+        const { data } = await api.get('/orders');
+        if (data.success && Array.isArray(data.data)) {
+          data.data.forEach(order => {
+            seenOrderIdsRef.current.add(String(order.id));
+          });
+          console.log('[NotificationContext] Pre-populated seen orders count:', seenOrderIdsRef.current.size);
+        }
+      } catch (err) {
+        console.error('Failed to pre-populate seen orders:', err);
+      }
+    };
+    initSeenOrders();
+
+    // Poll for new orders every 10 seconds
+    const pollOrders = async () => {
+      try {
+        const token = localStorage.getItem('admin_token');
+        if (!token) return;
+        
+        const { data } = await api.get('/orders');
+        if (data.success && Array.isArray(data.data)) {
+          for (const order of data.data) {
+            const orderIdStr = String(order.id);
+            if (!seenOrderIdsRef.current.has(orderIdStr)) {
+              seenOrderIdsRef.current.add(orderIdStr);
+              
+              // New order detected! Play sound, show toast, and queue modal
+              console.log('[NotificationContext] New order detected via polling:', order.id);
+              playNotificationSound();
+              
+              const title = 'New Order Recieved';
+              const body = `Order ${order.order_number || `#${order.id}`} has been placed by ${order.first_name || ''} ${order.last_name || ''}`;
+              setAlertMessage({ title, body });
+              setTimeout(() => setAlertMessage(null), 6000);
+              
+              setNewOrdersQueue(prev => {
+                if (prev.some(o => parseInt(o.orderId) === parseInt(order.id))) return prev;
+                return [
+                  ...prev,
+                  {
+                    orderId: order.id,
+                    shopId: order.shop_id || null,
+                    shopName: order.shop_name || 'N/A',
+                    orderNumber: order.order_number || `#${order.id}`,
+                    customerName: `${order.first_name || ''} ${order.last_name || ''}`,
+                    amount: order.total_amount,
+                    paymentStatus: order.payment_status || 'Pending'
+                  }
+                ];
+              });
+
+              if (order.shop_id) {
+                setShopBadgeCounts(prev => ({
+                  ...prev,
+                  [order.shop_id]: (prev[order.shop_id] || 0) + 1
+                }));
+              }
+            }
+          }
+        }
+      } catch (err) {
+        console.error('Error polling for new orders:', err);
+      }
+    };
+
+    const pollInterval = setInterval(pollOrders, 10000);
 
     // Listen to foreground notifications
     const unsubscribe = onMessageListener((payload) => {
@@ -106,6 +198,7 @@ export const NotificationProvider = ({ children }) => {
     window.addEventListener('simulate-fcm-notification', handleLocalSimulate);
 
     return () => {
+      clearInterval(pollInterval);
       if (unsubscribe) unsubscribe();
       if ('serviceWorker' in navigator) {
         navigator.serviceWorker.removeEventListener('message', handleServiceWorkerMessage);

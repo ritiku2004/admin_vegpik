@@ -480,3 +480,75 @@ header {
 
   th, td { padding: 10px 12px; font-size: 0.82rem; }
 }
+
+/* Responsive styles for admin Order Detail page */
+.order-details-grid {
+  display: grid;
+  grid-template-columns: 1fr 1.2fr;
+  gap: 24px;
+}
+
+.status-update-wrapper {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}
+
+.payment-action-wrapper {
+  display: flex;
+  gap: 8px;
+}
+
+.order-items-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 20px;
+  border-bottom: 1px solid var(--glass-border);
+  padding-bottom: 16px;
+  flex-wrap: wrap;
+  justify-content: space-between;
+}
+
+.order-items-header-title {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+@media (max-width: 1024px) {
+  .order-details-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+  }
+}
+
+@media (max-width: 640px) {
+  .status-update-wrapper {
+    flex-direction: column;
+    align-items: stretch;
+    width: 100%;
+  }
+
+  .status-update-wrapper button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .payment-action-wrapper {
+    flex-direction: column;
+    width: 100%;
+  }
+
+  .payment-action-wrapper button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .order-items-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 8px;
+  }
+}
+

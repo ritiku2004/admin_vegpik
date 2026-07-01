@@ -247,7 +247,7 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
         </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1.2fr', gap: '24px' }}>
+      <div className="order-details-grid">
         
         {/* Left Column: Status Update & Receiver Card */}
         <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
@@ -272,7 +272,7 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
               </span>
             </div>
             
-            <div style={{ display: 'flex', gap: '12px', alignItems: 'center' }}>
+            <div className="status-update-wrapper">
               <div style={{ flex: 1 }}>
                 <select 
                   className="input-field" 
@@ -315,7 +315,7 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
                 </div>
               </div>
               
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f1f5f9', paddingTop: '12px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderTop: '1px solid #f1f5f9', paddingTop: '12px', flexWrap: 'wrap', gap: '12px' }}>
                 <div>
                   <span style={{ color: 'var(--text-secondary)', display: 'block', fontSize: '0.8rem', textTransform: 'uppercase', fontWeight: 600, marginBottom: '4px' }}>Payment Status</span>
                   <span style={{ 
@@ -326,7 +326,7 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
                     {order.payment_status || 'Pending'}
                   </span>
                 </div>
-                <div style={{ display: 'flex', gap: '8px' }}>
+                <div className="payment-action-wrapper">
                   {order.payment_status !== 'Paid' && (
                     <button
                       onClick={handleMarkPaymentDone}
@@ -443,10 +443,12 @@ Total Amount: AED ${parseFloat(order.total_amount).toFixed(2)}`;
           
           {/* Order Items & Summary Card */}
           <div className="glass-panel" style={{ padding: '24px', display: 'flex', flexDirection: 'column' }}>
-            <div style={{ display: 'flex', alignItems: 'center', gap: '12px', marginBottom: '20px', borderBottom: '1px solid #f1f5f9', paddingBottom: '16px' }}>
-              <FiClock style={{ fontSize: '1.2rem', color: 'var(--accent-primary)' }} />
-              <h2 style={{ fontSize: '1.2rem', fontWeight: 600, margin: 0 }}>Items & Pricing</h2>
-              <span style={{ marginLeft: 'auto', color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
+            <div className="order-items-header">
+              <div className="order-items-header-title">
+                <FiClock style={{ fontSize: '1.2rem', color: 'var(--accent-primary)' }} />
+                <h2 style={{ fontSize: '1.2rem', fontWeight: 600, margin: 0 }}>Items & Pricing</h2>
+              </div>
+              <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem' }}>
                 Placed: {new Date(order.created_at).toLocaleString()}
               </span>
             </div>

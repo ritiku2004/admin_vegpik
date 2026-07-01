@@ -15,6 +15,7 @@ import ManageCharges from './pages/ManageCharges'
 import CategoryForm from './pages/CategoryForm'
 import ProductForm from './pages/ProductForm'
 import BannerForm from './pages/BannerForm'
+import CustomerSupport from './pages/CustomerSupport'
 import api from './api'
 import { NotificationProvider } from './context/NotificationContext'
 
@@ -71,6 +72,7 @@ function App() {
           <Route path="orders" element={<Orders shops={shops} />} />
           <Route path="orders/:orderId" element={<OrderDetail />} />
           <Route path="manage-charges" element={<ManageCharges />} />
+          <Route path="customer-support" element={<CustomerSupport />} />
         </Route>
       </Routes>
     </NotificationProvider>

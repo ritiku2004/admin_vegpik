@@ -2,7 +2,7 @@ import { useEffect } from 'react'
 import { NavLink, useLocation, useNavigate } from 'react-router-dom'
 import {
   FiHome, FiList, FiImage, FiLayers, FiShoppingBag,
-  FiMapPin, FiX, FiLogOut, FiUsers, FiDollarSign
+  FiMapPin, FiX, FiLogOut, FiUsers, FiDollarSign, FiMessageSquare
 } from 'react-icons/fi'
 import { useNotification } from '../context/NotificationContext'
 import logo from '../assets/logo.png'
@@ -16,6 +16,7 @@ const globalLinks = [
   { name: 'Users', path: '/users', icon: <FiUsers /> },
   { name: 'Shop Settings', path: '/manage-shops', icon: <FiMapPin /> },
   { name: 'Manage Charges', path: '/manage-charges', icon: <FiDollarSign /> },
+  { name: 'Customer Support', path: '/customer-support', icon: <FiMessageSquare /> },
 ];
 
 export default function Sidebar({ isOpen, setIsOpen }) {
